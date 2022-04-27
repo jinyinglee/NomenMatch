@@ -27,8 +27,9 @@ Install by docker-compose
 ```bash
   $ docker-compose exec solr bash
   $ ./bin/solr create_core -c taxa
-  $ cp solrconfig.xml /var/solr/data/taxa/conf
+  # $ cp solrconfig.xml /var/solr/data/taxa/conf
   $ cp schema.xml /var/solr/data/taxa/conf
+  $ cp managed-schema /var/solr/data/taxa/conf
 ```
 
 4) prepare data
@@ -131,6 +132,9 @@ Column definition:
 - scientific_name (full name or canonical form is ok)
 - name_url_id (the id which can be used to create a valid url to a taxon name page)
 - accepted_name_url_id (the id which can be used to create a valid url to an accepted taxon name page, if the name is a synonym)
+- common_name_c
+- taxon_rank
+- genus
 - family
 - order
 - class
