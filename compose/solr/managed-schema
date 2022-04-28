@@ -229,16 +229,16 @@
   <field name="sound_part_bc" type="string" indexed="true" stored="true" multiValued="true"/>
   <field name="sound_part_bc_strip_ending" type="string" indexed="true" stored="true" multiValued="true"/>
   <field name="nameSpell" type="string" indexed="true" multiValued="true"/>
-  <field name="dataset" type="string" indexed="true" stored="true"/>
+  <!-- <field name="dataset" type="string" indexed="true" stored="true"/> -->
   <!-- END moogoo -->
   <!-- BEGIN kim edited -->
   <field name="taxon_rank" type="string" indexed="true" stored="true"/>
   <field name="common_name_c" type="string" indexed="true" stored="true"/>
 
-  <!-- fulltext search -->
+  <!-- BEGIN fulltext search -->
   <copyField source="canonical_name" dest="_text_"/>
   <copyField source="common_name_c" dest="_text_"/>
-  <!-- fulltext search -->
+  <!-- END fulltext search -->
 
   <!-- <field name="taibnet_url" type="string" stored="true" multiValued="false" /> -->
   <!-- <field name="higher_taxa" type="string" indexed="true" stored="true" multiValued="true" /> -->
