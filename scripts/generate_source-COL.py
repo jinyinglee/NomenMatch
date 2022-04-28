@@ -42,16 +42,19 @@ df = df[['dwc:taxonID','dwc:acceptedNameUsageID','dwc:scientificName','dwc:taxon
 
 df.to_csv(f'./source-data/source_col_{today_str}.csv', sep='\t', header=None, index=False)
 
-# - namecode
-# - accepted_namecode
-# - scientific_name (full name or canonical form is ok)
-# - name_url_id (the id which can be used to create a valid url to a taxon name page)
-# - accepted_name_url_id (the id which can be used to create a valid url to an accepted taxon name page, if the name is a synonym)
-# - common_name_c
-# - taxon_rank
-# - genus
-# - family
-# - order
-# - class
-# - phylum
-# - kingdom
+# update source.csv if needed
+
+source = pd.read_table('./source-data/sources.csv', sep='\t', header=None)
+# id 不可動
+# name
+source.loc[source[0]=='col',1] = 'COL' 
+# url_base
+source.loc[source[0]=='col',2] = 'http://www.catalogueoflife.org/data/taxon/'
+# citation
+source.loc[source[0]=='col',3] = 'Bánki, O., Roskov, Y., Döring, M., Ower, G., Vandepitte, L., Hobern, D., Remsen, D., Schalk, P., DeWalt, R. E., Keping, M., Miller, J., Orrell, T., Aalbu, R., Adlard, R., Adriaenssens, E. M., Aedo, C., Aescht, E., Akkari, N., Alfenas-Zerbini, P., et al. (2022). Catalogue of Life Checklist (Version 2022-03-21). Catalogue of Life. https://doi.org/10.48580/dfpd'
+# url
+source.loc[source[0]=='col',4] = 'https://www.catalogueoflife.org/data/download'
+# version 下載檔案上的日期
+source.loc[source[0]=='col',5] = '2022-03-21'
+
+source.to_csv('./source-data/sources.csv', sep='\t', header=None, index=None)
