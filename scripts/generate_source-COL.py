@@ -19,9 +19,11 @@ id_name_dict = dict(zip(df['dwc:taxonID'], df['dwc:scientificName']))
 id_rank_dict = dict(zip(df['dwc:taxonID'], df['dwc:taxonRank']))
 parent_dict = dict(zip(df['dwc:taxonID'], df['dwc:parentNameUsageID']))
 
+df = df.replace({np.nan: None})
+
 def find_parent(x, i):
-    value = parent_dict.get(x, np.nan)
-    if value != np.nan: 
+    value = parent_dict.get(x)
+    if value: 
         parent_rank = id_rank_dict.get(value)
         if parent_rank in ['genus', 'family', 'order', 'class', 'phylum', 'kingdom']:
             parent_name = id_name_dict.get(value)
@@ -30,15 +32,16 @@ def find_parent(x, i):
             find_parent(value, i) 
 
 for i in df.index: #4463570
-    key = df.iloc[i]['dwc:acceptedNameUsageID'] if df.iloc[i]['dwc:acceptedNameUsageID'] != np.nan else df.iloc[i]['dwc:taxonID']
+    key = df.iloc[i]['dwc:acceptedNameUsageID'] if df.iloc[i]['dwc:acceptedNameUsageID'] else df.iloc[i]['dwc:taxonID']
     find_parent(key,i)
     if i % 1000 == 0:
         print(i)
 
-df = df.replace({np.nan: None})
 
 df = df[['dwc:taxonID','dwc:acceptedNameUsageID','dwc:scientificName','dwc:taxonID','dwc:acceptedNameUsageID', 
          'common_name_c', 'dwc:taxonRank', 'genus', 'family', 'order', 'class', 'phylum', 'kingdom']]
+
+df = df.replace({np.nan: None})
 
 df.to_csv(f'./source-data/source_col_{today_str}.csv', sep='\t', header=None, index=False)
 
