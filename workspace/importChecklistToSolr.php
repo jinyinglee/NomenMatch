@@ -21,6 +21,20 @@ Example(s):
 
 
 
+function readSpecificRow($filePath, $myrownumber)
+{
+    $f = fopen($filePath, "r");
+    $i = 0;
+    $myrownumber = (int) $myrownumber; // ensure it's actually a number.
+    while (($line = fgetcsv($f,0, "\t" )) !== false)
+    {
+        if (++$i < $myrownumber) continue;
+        fclose($f);
+        return $line;
+    }
+    return false; // if the specified line wasn't there return false
+}
+
 function submitJson($dat, $tmp_path="./tmp/save_storage.json") {
 	global $ep;
 	static $total = 0;
@@ -110,6 +124,8 @@ while ($vals = fgetcsv($fp, 0, "\t" )) {
 	$rec['sound_phylum'] = treat_word($rec['phylum']);
 	$rec['sound_kingdom'] = treat_word($rec['kingdom']);
 
+	$rec['taxon_rank'] = $vals[6];
+
 	// kim: 如果高階層和自己同階層就拿掉
 	if (array_key_exists(strtolower($rec['taxon_rank']), $rec)) {
 		$rec[strtolower($rec['taxon_rank'])] = null;
@@ -128,7 +144,6 @@ while ($vals = fgetcsv($fp, 0, "\t" )) {
 	//if ($rec['canonical_name'] == 'Bombyx pernyi') {
 		//var_dump($rec);
 	//}
-	$rec['taxon_rank'] = $vals[6];
 	$rec['common_name_c'] = $vals[5];
 
 	$rec['sound_name'] = treat_word($rec['canonical_name']);
@@ -176,6 +191,5 @@ while ($vals = fgetcsv($fp, 0, "\t" )) {
 if (!empty($ret)) {
 	submitJson($ret);
 }
-
 
 ?>
