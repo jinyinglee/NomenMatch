@@ -6,8 +6,7 @@ db_settings = {
     "port": '',
     "user": '',
     "password": '',
-    "db": '',
-}
+    "db": '',}
 
 conn = pymysql.connect(**db_settings)
 
@@ -37,18 +36,19 @@ query ="""
 SELECT tn.id AS namecode, at.accepted_taxon_name_id AS accepted_namecode, CONCAT(tn.name, ' ' , tn.formatted_authors) AS scientific_name,
        tn.id AS name_url_id, at.accepted_taxon_name_id AS accepted_name_url_id, 
 	   CONCAT_WS(',', at.common_name_c, at.alternative_name_c) AS common_name_c, r.display ->> '$."en-us"' AS taxon_rank, 
-       t2.genus, t2.family, t2.order, t2.class, t2.phylum, t2.kingdom
+       t2.genus, t2.family, t2.order, t2.class, t2.phylum, t2.kingdom, tn.name AS simple_name
 FROM taxon_names tn
 LEFT JOIN api_taxon_usages atu ON tn.id = atu.taxon_name_id
 LEFT JOIN api_taxon at ON atu.taxon_id = at.taxon_id
 LEFT JOIN ranks r ON tn.rank_id = r.id
 LEFT JOIN table2 t2 ON at.taxon_id = t2.taxon_id"""
+
 with conn.cursor() as cursor:
     cursor.execute(query1)
     cursor.execute(query)
     results = cursor.fetchall()
     results = pd.DataFrame(results, columns=['namecode', 'accepted_namecode', 'scientific_name', 'name_url_id', 'accepted_name_url_id', 'common_name_c', 'taxon_rank',
-                                            'genus', 'family', 'order', 'class', 'phylum', 'kingdom'])
+                                            'genus', 'family', 'order', 'class', 'phylum', 'kingdom', 'simple_name'])
 # id 轉成 int
 results[['namecode','accepted_namecode','name_url_id', 'accepted_name_url_id' ]] = results[['namecode','accepted_namecode','name_url_id', 'accepted_name_url_id' ]].fillna(0)
 results = results.astype({'accepted_namecode': "int", 'namecode': 'int', 'name_url_id': 'int', 'accepted_name_url_id': 'int'})
@@ -70,4 +70,4 @@ for i in results.index:
     if taxon_rank in ['genus', 'family', 'order', 'class', 'phylum', 'kingdom']:
         results.loc[i, taxon_rank] = None
 
-results.to_csv('source_taicol_20220510.csv', header=None, index=False, sep='\t')
+results.to_csv('source_taicol_20220516.csv', header=None, index=False, sep='\t')

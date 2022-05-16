@@ -5,7 +5,7 @@ from datetime import date
 today = date.today()
 today_str = today.strftime("%Y%m%d")
 
-df = pd.read_table('/Users/taibif/Documents/04-TaiCOL/2022-03-21_dwca/Taxon.tsv', sep='\t', usecols=['dwc:taxonID', 'dwc:acceptedNameUsageID','dwc:scientificName','dwc:taxonRank','dwc:parentNameUsageID'])
+df = pd.read_table('/Users/taibif/Documents/04-TaiCOL/2022-03-21_dwca/Taxon.tsv', sep='\t', usecols=['dwc:taxonID', 'dwc:acceptedNameUsageID','dwc:scientificName','dwc:taxonRank','dwc:parentNameUsageID','dwc:scientificNameAuthorship'])
 df['common_name_c'] = None
 df['kingdom'] = None
 df['phylum'] = None
@@ -13,6 +13,12 @@ df['class'] = None
 df['order'] = None
 df['family'] = None
 df['genus'] = None
+df['simple_name'] = None
+
+df = df.replace({np.nan: None})
+
+df['simple_name'] = df[['dwc:scientificName','dwc:scientificNameAuthorship']].apply(lambda x: x['dwc:scientificName'].replace(x['dwc:scientificNameAuthorship'],'') if x['dwc:scientificName'] and x['dwc:scientificNameAuthorship'] else x['dwc:scientificName'], axis=1)
+df["simple_name"]  = df["simple_name"].str.strip()
 
 # 把階層串回來
 id_name_dict = dict(zip(df['dwc:taxonID'], df['dwc:scientificName']))
@@ -39,7 +45,7 @@ for i in df.index: #4463570
 
 
 df = df[['dwc:taxonID','dwc:acceptedNameUsageID','dwc:scientificName','dwc:taxonID','dwc:acceptedNameUsageID', 
-         'common_name_c', 'dwc:taxonRank', 'genus', 'family', 'order', 'class', 'phylum', 'kingdom']]
+         'common_name_c', 'dwc:taxonRank', 'genus', 'family', 'order', 'class', 'phylum', 'kingdom', 'simple_name']]
 
 df = df.replace({np.nan: None})
 
