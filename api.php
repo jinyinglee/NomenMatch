@@ -643,8 +643,6 @@ function render_json ($data, $time, $best, $against) {
 		'accepted_namecode',
 		'namecode',
 		'source',
-		'url_id',
-		'a_url_id',
 		'kingdom',
 		'phylum',
 		'class',
