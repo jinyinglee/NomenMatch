@@ -7,6 +7,8 @@ set_time_limit(3600);
 $stime = microtime(true);
 
 $names = explode("|", str_replace("\n", "|", @$_REQUEST['names']));
+$names = array_filter($names); // 移除空值
+
 require_once "./include/functions.php";
 
 if (@$_REQUEST['lang']) {
@@ -602,7 +604,7 @@ function render_csv ($data) {
 
 	foreach($data as $d){
 		$types = explode('|',$d[0]['type']);
-		$types = array_filter($types ); // 移除空值
+		$types = array_filter($types); // 移除空值
 
 		$source_for_type = $d[0]['source'];
 		$source_count_values = array_count_values($source_for_type);
