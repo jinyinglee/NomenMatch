@@ -603,28 +603,30 @@ function render_csv ($data) {
 	array_push($results, $header);
 
 	foreach($data as $d){
-		$types = explode('|',$d[0]['type']);
-		$types = array_filter($types); // 移除空值
+		foreach($d as $dsub){
+			$types = explode('|',$dsub['type']);
+			$types = array_filter($types); // 移除空值
 
-		$source_for_type = $d[0]['source'];
-		$source_count_values = array_count_values($source_for_type);
+			$source_for_type = $dsub['source'];
+			$source_count_values = array_count_values($source_for_type);
 
-		$tmp_keys = array_keys($d[0]['matched']);
-		foreach($tmp_keys as $k){
-			$tmp = array();
-			$tmp['search_term'] = $d[0]['name'];
-			$tmp['matched_clean'] = $d[0]['matched_clean'];
-			foreach($columns as $c){
-				$tmp[$c] = $d[0][$c][$k];
+			$tmp_keys = array_keys($dsub['matched']);
+			foreach($tmp_keys as $k){
+				$tmp = array();
+				$tmp['search_term'] = $dsub['name'];
+				$tmp['matched_clean'] = $dsub['matched_clean'];
+				foreach($columns as $c){
+					$tmp[$c] = $dsub[$c][$k];
+				}
+
+				$current_source_index = 0;
+
+				if ($k == $source_count_values[$source_for_type[$current_source_index]]){
+					$current_source_index += 1;
+				}
+				$tmp['match_type'] = $types[$current_source_index];
+				array_push($results, $tmp);
 			}
-
-			$current_source_index = 0;
-
-			if ($k == $source_count_values[$source_for_type[$current_source_index]]){
-				$current_source_index += 1;
-			}
-			$tmp['match_type'] = $types[$current_source_index];
-			array_push($results, $tmp);
 		}
 	}
 
@@ -656,35 +658,37 @@ function render_json ($data, $time, $best, $against) {
 	$results = array();
 
 	foreach($data as $d){
-		$types = explode('|',$d[0]['type']);
-		$types = array_filter($types ); // 移除空值
+		foreach($d as $dsub){
+			$types = explode('|',$dsub['type']);
+			$types = array_filter($types ); // 移除空值
 
-		$source_for_type = $d[0]['source'];
-		$source_count_values = array_count_values($source_for_type);
+			$source_for_type = $dsub['source'];
+			$source_count_values = array_count_values($source_for_type);
 
-		$tmp_array = array(
-			'search_term' => $d[0]['name'],
-			'matched_clean' => $d[0]['matched_clean']
-		);
-		$tmp_keys = array_keys($d[0]['matched']);
-		$tmp_results = array();
-		foreach($tmp_keys as $k){
-			$tmp = array();
+			$tmp_array = array(
+				'search_term' => $dsub['name'],
+				'matched_clean' => $dsub['matched_clean']
+			);
+			$tmp_keys = array_keys($dsub['matched']);
+			$tmp_results = array();
+			foreach($tmp_keys as $k){
+				$tmp = array();
 
-			foreach($columns as $c){
-				$tmp[$c] = $d[0][$c][$k];
+				foreach($columns as $c){
+					$tmp[$c] = $dsub[$c][$k];
+				}
+
+				$current_source_index = 0;
+
+				if ($k == $source_count_values[$source_for_type[$current_source_index]]){
+					$current_source_index += 1;
+				}
+				$tmp['match_type'] = $types[$current_source_index];
+				array_push($tmp_results, $tmp);
 			}
-
-			$current_source_index = 0;
-
-			if ($k == $source_count_values[$source_for_type[$current_source_index]]){
-				$current_source_index += 1;
-			}
-			$tmp['match_type'] = $types[$current_source_index];
-			array_push($tmp_results, $tmp);
+			$tmp_array['results'] = $tmp_results;
+			array_push($results, $tmp_array);
 		}
-		$tmp_array['results'] = $tmp_results;
-		array_push($results, $tmp_array);
 	}
 
 	echo json_encode(array(
