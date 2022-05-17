@@ -1,5 +1,7 @@
 <?php
 
+use LDAP\Result;
+
 ini_set("memory_limit", "1024M");
 set_time_limit(3600);
 $stime = microtime(true);
@@ -23,7 +25,7 @@ else {
 require_once "./include/queryNames.php";
 
 $format = (!empty($_REQUEST['format']))?$_REQUEST['format']:'';
-$against = (!empty($_REQUEST['against']))?$_REQUEST['against']:''; // source backbone 
+$against = (!empty($_REQUEST['source']))?$_REQUEST['source']:''; // source backbone 
 $best = (!empty($_REQUEST['best']))?$_REQUEST['best']:'yes';
 $ep = (!empty($_REQUEST['ep']))?$_REQUEST['ep']:file_get_contents(dirname(realpath(__FILE__)).'/conf/solr_endpoint'); // endpoint
 $ep = trim($ep, " /\r\n");
@@ -310,7 +312,8 @@ foreach ($names as $nidx => $name) {
 
 $etime = microtime(true);
 
-render($res, $format, $etime - $stime);
+render($res, $format, $etime - $stime, $best, $against);
+
 
 function color_class ($idx) {
 /*	$colors = array(
@@ -421,7 +424,8 @@ function render_table ($data, $time, $hardcsv=false) {
 	// $prev_score = -100;
 	unset($columns[0]); // name
 	unset($columns[1]); // matched_clean
-	array_pop($columns); // type
+	unset($columns[14]); // type
+	unset($columns[15]); // simple_name
 	// 內文
 	foreach ($data as $nidx => $name_d) {
 		foreach ($name_d as $d) {
@@ -539,6 +543,7 @@ function render_table ($data, $time, $hardcsv=false) {
 }
 
 
+/*
 function render_plain ($data, $time) {
 	header("Content-type: text/plain; charset=utf-8");
 	echo "query time: " . $time . "s\n";
@@ -558,49 +563,146 @@ function render_plain ($data, $time) {
 		}
 	}
 }
+*/
 
-
-function render_csv ($data, $time) {
+function render_csv ($data) {
 	header("Content-type: text/csv; charset=utf-8");
 	header("Content-Disposition: attachment; filename=results.csv");
 	header("Pragma: no-cache");
 	header("Expires: 0");
-	$utf8_bom = "\xEF\xBB\xBF";
+	$utf8_bom = "\xEF\xBB\xBF"; 
 	echo $utf8_bom;
-	echo "sep=\t\n";
-	echo implode("\t", array_keys($data[0][0])) . "\n";
-	foreach ($data as $d) {
-		foreach ($d as $col) {
-			foreach ($col as $idx => $val) {
-				if (is_array($val)) {
-					$new_val = implode("|", $val);
-				}
-				else {
-					$new_val = implode("|", explode("|", trim($val, "\r\n ")));
-				}
-				$col[$idx] = $new_val;
+	// echo "sep=\t\n";
+
+	$header = array(
+		'search_term',
+		'matched_clean',
+		'matched',
+		'simple_name',
+		'common_name',
+		'accepted_namecode',
+		'namecode',
+		'source',
+		'kingdom',
+		'phylum',
+		'class',
+		'order',
+		'family',
+		'genus',
+		'taxon_rank',
+		'match_type');
+
+	$columns = $header;
+	unset($columns[15]); // match_type
+	unset($columns[0]); // search_term
+	unset($columns[1]); // matched_clean
+
+	$results = array();
+	array_push($results, $header);
+
+	foreach($data as $d){
+		$types = explode('|',$d[0]['type']);
+		$types = array_filter($types ); // 移除空值
+
+		$source_for_type = $d[0]['source'];
+		$source_count_values = array_count_values($source_for_type);
+
+		$tmp_keys = array_keys($d[0]['matched']);
+		foreach($tmp_keys as $k){
+			$tmp = array();
+			$tmp['search_term'] = $d[0]['name'];
+			$tmp['matched_clean'] = $d[0]['matched_clean'];
+			foreach($columns as $c){
+				$tmp[$c] = $d[0][$c][$k];
 			}
-			echo implode("\t", $col) . "\n";
+
+			$current_source_index = 0;
+
+			if ($k == $source_count_values[$source_for_type[$current_source_index]]){
+				$current_source_index += 1;
+			}
+			$tmp['match_type'] = $types[$current_source_index];
+			array_push($results, $tmp);
 		}
 	}
 
+	$f = fopen('php://output', 'w');
+
+    foreach ($results as $line) {
+        fputcsv($f, $line, $delimiter=",");
+    }
 }
 
-function render_json ($data, $time) {
+function render_json ($data, $time, $best, $against) {
 	header('Content-Type: application/json; charset=utf-8');
+
+	$columns = array(
+		'matched',
+		'simple_name',
+		'common_name',
+		'accepted_namecode',
+		'namecode',
+		'source',
+		'url_id',
+		'a_url_id',
+		'kingdom',
+		'phylum',
+		'class',
+		'order',
+		'family',
+		'genus',
+		'taxon_rank');
+
+	$results = array();
+
+	foreach($data as $d){
+		$types = explode('|',$d[0]['type']);
+		$types = array_filter($types ); // 移除空值
+
+		$source_for_type = $d[0]['source'];
+		$source_count_values = array_count_values($source_for_type);
+
+		$tmp_array = array(
+			'search_term' => $d[0]['name'],
+			'matched_clean' => $d[0]['matched_clean']
+		);
+		$tmp_keys = array_keys($d[0]['matched']);
+		$tmp_results = array();
+		foreach($tmp_keys as $k){
+			$tmp = array();
+
+			foreach($columns as $c){
+				$tmp[$c] = $d[0][$c][$k];
+			}
+
+			$current_source_index = 0;
+
+			if ($k == $source_count_values[$source_for_type[$current_source_index]]){
+				$current_source_index += 1;
+			}
+			$tmp['match_type'] = $types[$current_source_index];
+			array_push($tmp_results, $tmp);
+		}
+		$tmp_array['results'] = $tmp_results;
+		array_push($results, $tmp_array);
+	}
+
 	echo json_encode(array(
-		'query_time' => $time,
-		'results' => $data,
+		'query' => array(
+			'query_time' => $time,
+			'best' => $best,
+			'source' => $against,
+			),
+		'data' => $results,
 		));
-//	echo json_encode($data);
 }
 
 
-function render ($data, $format='table', $time) {
+function render ($data, $format='table', $time, $best, $against) {
 
 	$func_name = "render_" . $format;
 	if (function_exists($func_name)) {
-		call_user_func($func_name, $data, $time);
+		call_user_func($func_name, $data, $time, $best, $against);
 	}
 	else {
 		render_table($data, $time);

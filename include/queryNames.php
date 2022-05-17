@@ -56,7 +56,8 @@ function queryNameSingle($name, $against, $best, $ep){
 		'order',
 		'family',
 		'genus',
-		'taxon_rank');
+		'taxon_rank',
+		'simple_name');
 
 	/**
 	 * @todo 中文的話best比對方式要修改 
@@ -120,7 +121,8 @@ function queryNames ($name, $against, $best, $ep) {
 		'order',
 		'family',
 		'genus',
-		'taxon_rank');
+		'taxon_rank',
+		'simple_name');
 
 
 	if (empty($ep)) return false;
@@ -420,6 +422,7 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $is
 					'genus' => array(@$doc->genus),
 					'taxon_rank' => array(strtolower(@$doc->taxon_rank)),
 					'type' => $msg,
+					'simple_name' => array(@$doc->simple_name),
 				);
 			}
 			else {
@@ -438,6 +441,7 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $is
 					$all_matched[$doc->canonical_name]['family'][] = @$doc->family;
 					$all_matched[$doc->canonical_name]['genus'][] = @$doc->genus;
 					$all_matched[$doc->canonical_name]['taxon_rank'][] = strtolower(@$doc->taxon_rank);
+					$all_matched[$doc->canonical_name]['simple_name'][] = @$doc->simple_name;
 				}
 
 			}
@@ -463,7 +467,8 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $is
 			'family' => array(),
 			'genus' => array(),
 			'taxon_rank' => array(),
-			'type' => 'No match'
+			'type' => 'No match',
+			'simple_name' => array(),
 		);
 	}
 }
