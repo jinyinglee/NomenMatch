@@ -409,41 +409,41 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $is
 				unset($all_matched['']);
 				$all_matched[$doc->canonical_name] = array(
 					'matched_clean' => $doc->canonical_name,
-					'matched' => array(@$doc->original_name),
-					'common_name' => array(@$doc->common_name_c),
-					'accepted_namecode' => array(@$doc->accepted_namecode),
-					'namecode' => array(@$doc->namecode),
+					'matched' => array((isset($doc->original_name) ? @$doc -> original_name : '')),
+					'common_name' => array((isset($doc->common_name_c) ? @$doc -> common_name_c : '')),
+					'accepted_namecode' => array((isset($doc->accepted_namecode) ? @$doc -> accepted_namecode : '')),
+					'namecode' => array((isset($doc->namecode) ? @$doc -> namecode : '')),
 					'source' => array(array_shift(explode("-", $doc->id))),
-					'url_id' => array(@$doc->url_id),
-					'a_url_id' => array(@$doc->a_url_id),
-					'kingdom' => array(@$doc->kingdom),
-					'phylum' => array(@$doc->phylum),
-					'class' => array(@$doc->class),
-					'order' => array(@$doc->order),
-					'family' => array(@$doc->family),
-					'genus' => array(@$doc->genus),
-					'taxon_rank' => array(strtolower(@$doc->taxon_rank)),
+					'url_id' => array((isset($doc->url_id) ? @$doc -> url_id : '')),
+					'a_url_id' => array((isset($doc->a_url_id) ? @$doc -> a_url_id : '')),
+					'kingdom' => array((isset($doc->kingdom) ? @$doc -> kingdom : '')),
+					'phylum' => array((isset($doc->phylum) ? @$doc -> phylum : '')),
+					'class' => array((isset($doc->class) ? @$doc -> class : '')),
+					'order' => array((isset($doc->order) ? @$doc -> order : '')),
+					'family' => array((isset($doc->family) ? @$doc -> family : '')),
+					'genus' => array((isset($doc->genus) ? @$doc -> genus : '')),
+					'taxon_rank' => array((isset($doc->taxon_rank) ? strtolower(@$doc -> taxon_rank) : '')),
 					'type' => $msg,
-					'simple_name' => array(@$doc->simple_name),
+					'simple_name' => array((isset($doc->simple_name) ? @$doc -> simple_name : '')),
 				);
 			}
 			else {
 				if (!in_array(@$doc->namecode, $all_matched[$doc->canonical_name]['namecode'])) {
-					$all_matched[$doc->canonical_name]['namecode'][] = @$doc->namecode;
-					$all_matched[$doc->canonical_name]['matched'][] = @$doc->original_name;
-					$all_matched[$doc->canonical_name]['common_name'][] = @$doc->common_name_c;
+					$all_matched[$doc->canonical_name]['namecode'][] = (isset($doc->namecode) ? @$doc -> namecode : '');
+					$all_matched[$doc->canonical_name]['matched'][] = (isset($doc->original_name) ? @$doc -> original_name : '');
+					$all_matched[$doc->canonical_name]['common_name'][] = (isset($doc->common_name_c) ? @$doc -> common_name_c : '');
 					$all_matched[$doc->canonical_name]['source'][] = array_shift(explode("-", $doc->id));
-					$all_matched[$doc->canonical_name]['accepted_namecode'][] = @$doc->accepted_namecode;
-					$all_matched[$doc->canonical_name]['url_id'][] = @$doc->url_id;
-					$all_matched[$doc->canonical_name]['a_url_id'][] = @$doc->a_url_id;
-					$all_matched[$doc->canonical_name]['kingdom'][] = @$doc->kingdom;
-					$all_matched[$doc->canonical_name]['phylum'][] = @$doc->phylum;
-					$all_matched[$doc->canonical_name]['class'][] = @$doc->class;
-					$all_matched[$doc->canonical_name]['order'][] = @$doc->order;
-					$all_matched[$doc->canonical_name]['family'][] = @$doc->family;
-					$all_matched[$doc->canonical_name]['genus'][] = @$doc->genus;
-					$all_matched[$doc->canonical_name]['taxon_rank'][] = strtolower(@$doc->taxon_rank);
-					$all_matched[$doc->canonical_name]['simple_name'][] = @$doc->simple_name;
+					$all_matched[$doc->canonical_name]['accepted_namecode'][] = (isset($doc->accepted_namecode) ? @$doc->accepted_namecode : '');
+					$all_matched[$doc->canonical_name]['url_id'][] = (isset($doc->url_id) ? @$doc -> url_id : '');
+					$all_matched[$doc->canonical_name]['a_url_id'][] =(isset($doc->a_url_id) ? @$doc -> a_url_id : '');
+					$all_matched[$doc->canonical_name]['kingdom'][] = (isset($doc->kingdom) ? @$doc -> kingdom : '');
+					$all_matched[$doc->canonical_name]['phylum'][] = (isset($doc->phylum) ? @$doc -> phylum : '');
+					$all_matched[$doc->canonical_name]['class'][] = (isset($doc->class) ? @$doc -> class : '');
+					$all_matched[$doc->canonical_name]['order'][] = (isset($doc->order) ? @$doc -> order : '');
+					$all_matched[$doc->canonical_name]['family'][] = (isset($doc->family) ? @$doc -> family : '');
+					$all_matched[$doc->canonical_name]['genus'][] = (isset($doc->genus) ? @$doc -> genus : '');
+					$all_matched[$doc->canonical_name]['taxon_rank'][] = (isset($doc->taxon_rank) ? strtolower(@$doc -> taxon_rank) : '');
+					$all_matched[$doc->canonical_name]['simple_name'][] = (isset($doc->simple_name) ? @$doc -> simple_name : '');
 				}
 
 			}
