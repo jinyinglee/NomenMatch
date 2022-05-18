@@ -39,9 +39,12 @@ function sortByKeyOrder(array $sortOrderKeys, array $arrayToSort){
 // kim: 2022-04新增，比對屬以上階層，一次比對一個name
 // *** rank要限制在種以上嗎?
 // $ep = 'http://solr:8983/solr/taxa';
-function queryNameSingle($name, $against, $best, $ep){
+function queryNameSingle($name, $name_cleaned, $against, $best, $ep){
+
+	extract_results("", "", $reset=true);
+
 	// kim: 搜尋 canonical_name or common_name_c
-	$name_cleaned = canonical_form($name, true);
+	// $name_cleaned = canonical_form($name, true);
 	$columns = array(
 		'matched',
 		'common_name',
@@ -63,14 +66,13 @@ function queryNameSingle($name, $against, $best, $ep){
 	 * @todo 中文的話best比對方式要修改 
 	 * @todo 中文異體字
 	 */
-	if ($best=='yes'&&!(preg_match("/\p{Han}+/u", $name))) {
+	if ($best=='yes'&&!(preg_match("/\p{Han}+/u", $name_cleaned))) {
 		$ep .= '/select?wt=json&fq=is_single_word%3Atrue&rows=0&q=' . rawurlencode($name_cleaned) .'~1';
 	} 
-	elseif (preg_match("/\p{Han}+/u", $name)) { // 是中文
-		$name_cleaned = $name;
-		$ep .= '/select?wt=json&rows=0&q=common_name_c:/.*' . rawurlencode(treat_word_c($name)) . '.*/';
+	elseif (preg_match("/\p{Han}+/u", $name_cleaned)) { // 是中文
+		$ep .= '/select?wt=json&rows=0&q=common_name_c:/.*' . rawurlencode(treat_word_c($name_cleaned)) . '.*/';
 	}
-	elseif (!preg_match("/\p{Han}+/u", $name)) { // 不是best, 不是中文
+	elseif (!preg_match("/\p{Han}+/u", $name_cleaned)) { // 不是best, 不是中文
 		$ep .= '/select?wt=json&fq=is_single_word%3Atrue&rows=0&q=' . rawurlencode($name_cleaned) .'~';
 	} 
 

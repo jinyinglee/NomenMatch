@@ -38,7 +38,13 @@ $res = array();
 foreach ($names as $nidx => $name) {
 
 	// kim: 比對前去除掉特殊字元 & trim 空白字元，不保留subgenus的括號
-	$name_cleaned = canonical_form(trim($name, " \t\r\n.,;|"), true);
+	if (preg_match("/\p{Han}+/u", $name)){
+		$name_cleaned = trim(preg_replace('/^[\pZ\pC]+|[\pZ\pC]+$/u','',$name), " \t\r\n.,;|");
+	}
+	else{
+		$name_cleaned = canonical_form(trim(preg_replace('/^[\pZ\pC]+|[\pZ\pC]+$/u','',$name), " \t\r\n.,;|"), true);
+	}
+
 	// 如果可用空白鍵拆成array，則維持以原先的演算法match
 	if (count(explode(" ", $name_cleaned)) > 1) {		
 	/*
@@ -217,13 +223,13 @@ foreach ($names as $nidx => $name) {
 		 */
 		$scores = array();
 
-		$all_matched = queryNameSingle($name, $against, $best, $ep);
+		$all_matched = queryNameSingle($name, $name_cleaned, $against, $best, $ep);
 		// $all_matched = queryNameSingle('鐵杉', $against, 'yes', 'http://solr:8983/solr/taxa');
 		// $name='鐵杉';
 		// kim: 比對後計算similarity
 		foreach ($all_matched as $matched_name => $matched) {
 			if (preg_match("/\p{Han}+/u", $name)){
-				$scores[$matched_name] = nameSimilaritySingle($matched['common_name'][0], $name);
+				$scores[$matched_name] = nameSimilaritySingle($matched['common_name'][0], $name_cleaned);
 			}else{
 				$scores[$matched_name] = nameSimilaritySingle($matched['matched_clean'], $name_cleaned);
 			}
@@ -310,8 +316,6 @@ foreach ($names as $nidx => $name) {
 	}
 }
 
-
-
 $etime = microtime(true);
 
 render($res, $format, $etime - $stime, $best, $against);
@@ -348,7 +352,8 @@ function render_table ($data, $time, $hardcsv=false) {
 		'url_id',
 		'a_url_id',
 		'best',
-		'score'
+		'score',
+		'simple_name'
 	);
 
 	echo "<head>";
