@@ -147,9 +147,9 @@ foreach ($names as $nidx => $name) {
 						// echo $all_matched[$matched_name]['matched'];
 						if ($moreThan1) {
 							// 內容移除掉??
-							$all_matched[$matched_name]['namecode'] = array();
-							$all_matched[$matched_name]['accepted_namecode'] = array();
-							$all_matched[$matched_name]['source'] = array();
+							// $all_matched[$matched_name]['namecode'] = array();
+							// $all_matched[$matched_name]['accepted_namecode'] = array();
+							// $all_matched[$matched_name]['source'] = array();
 							$all_matched[$matched_name]['type'] .= " / Undecidable: Multiple cross-ranked matches";
 						}
 						elseif ($diff_rank) {
@@ -318,6 +318,7 @@ foreach ($names as $nidx => $name) {
 
 $etime = microtime(true);
 
+
 render($res, $format, $etime - $stime, $best, $against);
 
 
@@ -338,7 +339,6 @@ function color_class ($idx) {
 	);
 	return $colors[$idx % count($colors)];
 }
-
 
 
 function render_table ($data, $time, $hardcsv=false) {
