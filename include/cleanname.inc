@@ -1,10 +1,11 @@
 <?php
 
-/**
+/*
  * Orignal designed by Patrick Leary, Encyclopedia of Life
  * With slight mods by David Shorthouse, Encyclopedia of Life for use as a stand-alone class
  * Modified by Jims Hsu .TaiEOL and Jason Mai
-
+  */
+/*
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
    as published by the Free Software Foundation; either version 2
@@ -27,14 +28,16 @@ define("UPPER","A-ZÀÂÅÅÃÄÁÆČÇÉÈÊËÍÌÎÏÑÓÒÔØÕÖÚÙÛÜß�
 define("LOWER","a-záááàâåãäăæčćçéèêëĕíìîïǐĭñńóòôøõöŏúùûüůśšşřğžźýýÿœœ");
 
 /** 
- * 去除掉所有不是拉丁文的部份(包含marker)
+ * 去除掉所有不是拉丁文的部份(包含marker) */
+/*
  * @param unknown_type $string
- */
+ * subgen_skip: 是否移除亞屬括號
+ * sp_keep: 是否保留 sp. & spp. 縮寫
+*/
 function canonical_form($string, $subgen_skip=false, $sp_keep=false){
 
-#	error_reporting(E_WARNING);
-
-        global $has_subgen,$cultivar;
+        #	error_reporting(E_WARNING);
+        global $has_subgen; //$cultivar;
         $has_subgen = false;
         
         $string = preg_replace('/([a-z])([A-Z])/', '$1 $2', $string);
@@ -43,13 +46,12 @@ function canonical_form($string, $subgen_skip=false, $sp_keep=false){
           $string = $arr[1];
         }
 
-	// 20150628 Mai edit: replace utf8 c2a0 (no-break space) with space
+        // 20150628 Mai edit: replace utf8 c2a0 (no-break space) with space
         $string = str_replace("\xC2\xA0", " ", $string);
-
         $string = str_replace(" tipo veneto","",$string);
         $string = str_replace("×"," ",$string);
 
-	// 20150628 Mai edit: no slash allowed
+        // 20150628 Mai edit: no slash allowed
         $string = array_shift(explode("/", $string));
         $words = preg_split("/[[:space:]]+/",trim($string));//以空白字元切割學名串
 
@@ -103,8 +105,6 @@ function canonical_form($string, $subgen_skip=false, $sp_keep=false){
            }//單純亞屬不處理
         }
         
-        
-        
         /**
          * 過濾$words[0]字尾出現問號者,若無此情形則跳過
          */
@@ -148,8 +148,6 @@ function canonical_form($string, $subgen_skip=false, $sp_keep=false){
         }
         /**************開始處理次字****************************/
         $start_map = 1;
-        
-        
         if(preg_match("/^\(([".UPPER.LOWER."].*)\)$/u",$words[1],$arr)){//判定是否出現亞屬表示
             if (!$subgen_skip){
               $return_string.=" $words[1]";//有保留亞屬括號
@@ -223,95 +221,9 @@ function canonical_form($string, $subgen_skip=false, $sp_keep=false){
               $return_string.=" $words[$i]";
             }
         }
-        
         return trim($return_string);//去除掉所有不是拉丁文的部份回傳
     }
     
-function italicized_form($string)
-    {
-        $canonicalForm = canonical_form($string);//去除掉所有不是拉丁文的部份
-        
-        $words = explode(" ",$canonicalForm);//經過canonical_form只會剩下拉丁文,這裡用空白切割開
-        
-        foreach($words as $w)
-        {
-          $pattern = "/(^|[^0-9".UPPER.LOWER."])".preg_quote($w, "/")."([^0-9".UPPER.LOWER."]|$)/";   
-                 
-          $replacement = "\\1|-n-|".$w."|-/n-|\\2";          
-          $string = preg_replace($pattern,$replacement,$string);//針對原始字串中的拉丁文全加上特殊tag
-            /**
-             * 預防$w(拉丁文)出現脫逸字元
-             * preg_quote() 他會在所有的特殊字元 前加上反斜線脫逸字元. 
-             * $keywords = "$40 for a g3/400";
-			 * $keywords = preg_quote ($keywords, "/");
-			 * echo $keywords; // returns \$40 for a g3\/400
-             * 
-             *  $pattern = /(^|[^0-9所有拉丁字母])拉丁文([^0-9所有拉丁字母]|$)/
-             *  抓出目標"拉丁文", 前後的條件:
-             *  (^|[^0-9所有拉丁字母])這段說明:"拉丁文"是字串開頭 或 前面連接的不為數字或拉丁文字
-             *  ([^0-9所有拉丁字母]|$)這段說明:"拉丁文"後前面連接的不為數字 或 當好是字串結尾
-             *  
-             *  explain:
-             *     ^     =>目標是整個比對輸入列的開始位置
-             *     利用『|』把幾個 RE 連接起來時﹐例如 RE1 | RE2 | ... | REn 時﹐ 代表字串只要符合 RE1, RE2, ..., REn 中的任何一個即成立
-             *     [^xyz]=>比對不在中中括弧內出現的任一個字元
-             *     $	 =>目標結尾是整個比對輸入列的結束位置
-             *     
-             *     (x)	 =>比對 x 並將符合的部分存入一個變數
-             *     如:執行preg_match_all($pattern, $string,$arr);
-             *     
-             *     以下的$arr[1]與$arr[2]即為()匹配到的
-             *     
-             *     $arr = 
-             *     array(3) {
-             *     	[0]=>
-             *     	array(1) {
-             *         [0]=>
-             *         string(9) "Brassica "
-             *      }
-             *      [1]=>
-             *      array(1) {
-             *         [0]=>
-             *         string(0) ""           ====>匹配到此為輸入列開頭
-             *      }
-             *      [2]=>
-             *      array(1) {
-             *         [0]=>
-             *         string(1) " "          ====>匹配到之後連接為空白符
-             *      }
-             *     }
-             *     
-             *  ********************************************************
-             *  利用 ( ) 記憶比對結果
-             *  當 pattern 中有 ( ) 時, ( ) 中的部份在比對成功時會依序被記錄到 $1, $2, $3.... 這些個變數中,
-             *  在 pattern 的其它部份可以分別用 \1, \2, \3... 來引用 $1, $2, $3 的內容
-             *  $replacement = \\1|-n-|拉丁文|-/n-|\2
-             *  \1代表匹配陣列$arr的第1個值
-             *  \2代表匹配陣列$arr的第2個值
-             *  以上兩個值都是$pattern中的()匹配到的值
-             *  
-             *  用preg_replace取代後,拉丁文部份會被|-n-|與|-/n-|符號包住
-             *       |-n-|拉丁文|-/n-|
-             *       
-             */
-            
-        }
-        
-        /**
-         * 針對兩個拉丁文中間只有空白的情況,直接把|-/n-| |-n-|的部分換成空白即可
-         */
-        while(preg_match("/\|-\/n-\| \|-n-\|/",$string,$arr)){
-          $string = str_replace("|-/n-| |-n-|"," ",$string);
-        } 
-        
-        /**
-         * 最後一步,把 |-n-|符號換成html的斜體
-         */
-        $string = str_replace("|-n-|","<i>",$string);
-        $string = str_replace("|-/n-|","</i>",$string);
-        
-        return $string;
-}
     
 function author_parts(){
   
@@ -334,6 +246,11 @@ function author_parts(){
         return $array;
 }
     
+
+/**
+ * @todo 缺 特別品型 f.sp. 種族 strip 形態型 m.
+ */
+
 function sci_parts(){
         $array = array();
         $array["unranked"]=true;
@@ -782,4 +699,92 @@ function junk_parts(){
         $array["ty"]=true;
         $array["ed"]=true;
         return $array;
+}
+
+
+// 目前沒用到
+function italicized_form($string)
+    {
+        $canonicalForm = canonical_form($string);//去除掉所有不是拉丁文的部份
+        
+        $words = explode(" ",$canonicalForm);//經過canonical_form只會剩下拉丁文,這裡用空白切割開
+        
+        foreach($words as $w)
+        {
+          $pattern = "/(^|[^0-9".UPPER.LOWER."])".preg_quote($w, "/")."([^0-9".UPPER.LOWER."]|$)/";   
+                 
+          $replacement = "\\1|-n-|".$w."|-/n-|\\2";          
+          $string = preg_replace($pattern,$replacement,$string);//針對原始字串中的拉丁文全加上特殊tag
+            /**
+             * 預防$w(拉丁文)出現脫逸字元
+             * preg_quote() 他會在所有的特殊字元 前加上反斜線脫逸字元. 
+             * $keywords = "$40 for a g3/400";
+			 * $keywords = preg_quote ($keywords, "/");
+			 * echo $keywords; // returns \$40 for a g3\/400
+             * 
+             *  $pattern = /(^|[^0-9所有拉丁字母])拉丁文([^0-9所有拉丁字母]|$)/
+             *  抓出目標"拉丁文", 前後的條件:
+             *  (^|[^0-9所有拉丁字母])這段說明:"拉丁文"是字串開頭 或 前面連接的不為數字或拉丁文字
+             *  ([^0-9所有拉丁字母]|$)這段說明:"拉丁文"後前面連接的不為數字 或 當好是字串結尾
+             *  
+             *  explain:
+             *     ^     =>目標是整個比對輸入列的開始位置
+             *     利用『|』把幾個 RE 連接起來時﹐例如 RE1 | RE2 | ... | REn 時﹐ 代表字串只要符合 RE1, RE2, ..., REn 中的任何一個即成立
+             *     [^xyz]=>比對不在中中括弧內出現的任一個字元
+             *     $	 =>目標結尾是整個比對輸入列的結束位置
+             *     
+             *     (x)	 =>比對 x 並將符合的部分存入一個變數
+             *     如:執行preg_match_all($pattern, $string,$arr);
+             *     
+             *     以下的$arr[1]與$arr[2]即為()匹配到的
+             *     
+             *     $arr = 
+             *     array(3) {
+             *     	[0]=>
+             *     	array(1) {
+             *         [0]=>
+             *         string(9) "Brassica "
+             *      }
+             *      [1]=>
+             *      array(1) {
+             *         [0]=>
+             *         string(0) ""           ====>匹配到此為輸入列開頭
+             *      }
+             *      [2]=>
+             *      array(1) {
+             *         [0]=>
+             *         string(1) " "          ====>匹配到之後連接為空白符
+             *      }
+             *     }
+             *     
+             *  ********************************************************
+             *  利用 ( ) 記憶比對結果
+             *  當 pattern 中有 ( ) 時, ( ) 中的部份在比對成功時會依序被記錄到 $1, $2, $3.... 這些個變數中,
+             *  在 pattern 的其它部份可以分別用 \1, \2, \3... 來引用 $1, $2, $3 的內容
+             *  $replacement = \\1|-n-|拉丁文|-/n-|\2
+             *  \1代表匹配陣列$arr的第1個值
+             *  \2代表匹配陣列$arr的第2個值
+             *  以上兩個值都是$pattern中的()匹配到的值
+             *  
+             *  用preg_replace取代後,拉丁文部份會被|-n-|與|-/n-|符號包住
+             *       |-n-|拉丁文|-/n-|
+             *       
+             */
+            
+        }
+        
+        /**
+         * 針對兩個拉丁文中間只有空白的情況,直接把|-/n-| |-n-|的部分換成空白即可
+         */
+        while(preg_match("/\|-\/n-\| \|-n-\|/",$string,$arr)){
+          $string = str_replace("|-/n-| |-n-|"," ",$string);
+        } 
+        
+        /**
+         * 最後一步,把 |-n-|符號換成html的斜體
+         */
+        $string = str_replace("|-n-|","<i>",$string);
+        $string = str_replace("|-/n-|","</i>",$string);
+        
+        return $string;
 }

@@ -64,8 +64,10 @@ $variants_array = [
 	["/\游蛇|遊蛇/",'[遊游]蛇'],
 	["/\椿象|蝽象/",'[蝽椿]象'],	
 	["/\鈎|鉤/",'[鈎鉤]'],	
+	["/\螺|螺/",'[螺螺]'],	
   ];
   
+
 function treat_word_c ($string) {
 	foreach ($GLOBALS['variants_array'] as $value) {
 		$string = preg_replace($value[0], $value[1], $string);
