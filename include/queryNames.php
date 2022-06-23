@@ -62,13 +62,12 @@ function queryNameSingle($name, $name_cleaned, $against, $best, $ep){
 		'taxon_rank',
 		'simple_name');
 
-	/**
-	 * @todo 中文的話best比對方式要修改 
-	 * @todo 中文異體字
-	 */
-	if ($best=='yes'&&!(preg_match("/\p{Han}+/u", $name_cleaned))) {
+	if ($best=='yes'&&!(preg_match("/\p{Han}+/u", $name_cleaned))) { // best, 不是中文
 		$ep .= '/select?wt=json&fq=is_single_word%3Atrue&rows=0&q=' . rawurlencode($name_cleaned) .'~1';
 	} 
+	elseif ($best=='yes'&&preg_match("/\p{Han}+/u", $name_cleaned)) { // best, 是中文
+		$ep .= '/select?wt=json&rows=0&q=common_name_c:/(' . rawurlencode(treat_word_c($name_cleaned)) . ')/';
+	}
 	elseif (preg_match("/\p{Han}+/u", $name_cleaned)) { // 是中文
 		$ep .= '/select?wt=json&rows=0&q=common_name_c:/.*' . rawurlencode(treat_word_c($name_cleaned)) . '.*/';
 	}
@@ -76,13 +75,12 @@ function queryNameSingle($name, $name_cleaned, $against, $best, $ep){
 		$ep .= '/select?wt=json&fq=is_single_word%3Atrue&rows=0&q=' . rawurlencode($name_cleaned) .'~';
 	} 
 
-	/*
-	elseif (preg_match("/\p{Han}+/u", $name) { // 不是best, 是中文
-http://solr:8983/solr/taxa/select?wt=json&rows=0&q=%E9%90%B5%E6%9D%89
-http://solr:8983/solr/taxa/select?wt=json&rows=0&q=Taiwania
-	}*/
-	// extract_results("", "", $reset=true);
-	extract_results($ep, '', $reset=false, $against=$against);
+
+	if (preg_match("/\p{Han}+/u", $name_cleaned)) {
+		extract_results($ep, '', $reset=false, $against=$against, $search_term=$name_cleaned);
+	}else{
+		extract_results($ep, '', $reset=false, $against=$against);
+	}
 	$all_matched_tmp = extract_results();
 	
 	if (!$all_matched_tmp['']['type']=='No match'){
@@ -363,8 +361,7 @@ function extract_suggestion ($query_url="", $msg="") {
 
 
 
-function extract_results ($query_url="", $msg="", $reset=false, $against="", $is_common_name=false) {
-
+function extract_results ($query_url="", $msg="", $reset=false, $against="", $search_term="") {
 	static $all_matched = array();
 	static $query_urls = array();
 	if ($reset) {
@@ -405,12 +402,23 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $is
 		foreach ($docs as $doc) {
 			$doc->is_accepted = ($doc->namecode === $doc->accepted_namecode)?1:0;
 			$matched[] = $doc;
-			if (empty($all_matched[$doc->canonical_name])) {
+			if (preg_match("/\p{Han}+/u", $search_term)) {
+				$mearged_term = $search_term;
+			} else{
+				$mearged_term = $doc->canonical_name;
+			}
+			if (empty($all_matched[$mearged_term])) {
 				unset($all_matched['']);
-				$all_matched[$doc->canonical_name] = array(
-					'matched_clean' => $doc->canonical_name,
+				$cc = $doc -> common_name_c;
+				if (isset($cc)){
+					$cc = implode(",", $cc);
+				} else {
+					$cc = '';
+				}
+				$all_matched[$mearged_term] = array(
+					'matched_clean' => $mearged_term,
 					'matched' => array((isset($doc->original_name) ? @$doc -> original_name : '')),
-					'common_name' => array((isset($doc->common_name_c) ? @$doc -> common_name_c : '')),
+					'common_name' => array($cc),
 					'accepted_namecode' => array((isset($doc->accepted_namecode) ? @$doc -> accepted_namecode : '')),
 					'namecode' => array((isset($doc->namecode) ? @$doc -> namecode : '')),
 					'source' => array(array_shift(explode("-", $doc->id))),
@@ -428,22 +436,28 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $is
 				);
 			}
 			else {
-				if (!in_array(@$doc->namecode, $all_matched[$doc->canonical_name]['namecode'])) {
-					$all_matched[$doc->canonical_name]['namecode'][] = (isset($doc->namecode) ? @$doc -> namecode : '');
-					$all_matched[$doc->canonical_name]['matched'][] = (isset($doc->original_name) ? @$doc -> original_name : '');
-					$all_matched[$doc->canonical_name]['common_name'][] = (isset($doc->common_name_c) ? @$doc -> common_name_c : '');
-					$all_matched[$doc->canonical_name]['source'][] = array_shift(explode("-", $doc->id));
-					$all_matched[$doc->canonical_name]['accepted_namecode'][] = (isset($doc->accepted_namecode) ? @$doc->accepted_namecode : '');
-					$all_matched[$doc->canonical_name]['url_id'][] = (isset($doc->url_id) ? @$doc -> url_id : '');
-					$all_matched[$doc->canonical_name]['a_url_id'][] =(isset($doc->a_url_id) ? @$doc -> a_url_id : '');
-					$all_matched[$doc->canonical_name]['kingdom'][] = (isset($doc->kingdom) ? @$doc -> kingdom : '');
-					$all_matched[$doc->canonical_name]['phylum'][] = (isset($doc->phylum) ? @$doc -> phylum : '');
-					$all_matched[$doc->canonical_name]['class'][] = (isset($doc->class) ? @$doc -> class : '');
-					$all_matched[$doc->canonical_name]['order'][] = (isset($doc->order) ? @$doc -> order : '');
-					$all_matched[$doc->canonical_name]['family'][] = (isset($doc->family) ? @$doc -> family : '');
-					$all_matched[$doc->canonical_name]['genus'][] = (isset($doc->genus) ? @$doc -> genus : '');
-					$all_matched[$doc->canonical_name]['taxon_rank'][] = (isset($doc->taxon_rank) ? strtolower(@$doc -> taxon_rank) : '');
-					$all_matched[$doc->canonical_name]['simple_name'][] = (isset($doc->simple_name) ? @$doc -> simple_name : '');
+				$cc = $doc -> common_name_c;
+				if (isset($cc)){
+					$cc = implode(",", $cc);
+				} else {
+					$cc = '';
+				}
+				if (!in_array(@$doc->namecode, $all_matched[$mearged_term]['namecode'])) {
+					$all_matched[$mearged_term]['namecode'][] = (isset($doc->namecode) ? @$doc -> namecode : '');
+					$all_matched[$mearged_term]['matched'][] = (isset($doc->original_name) ? @$doc -> original_name : '');
+					$all_matched[$mearged_term]['common_name'][] = ($cc);
+					$all_matched[$mearged_term]['source'][] = array_shift(explode("-", $doc->id));
+					$all_matched[$mearged_term]['accepted_namecode'][] = (isset($doc->accepted_namecode) ? @$doc->accepted_namecode : '');
+					$all_matched[$mearged_term]['url_id'][] = (isset($doc->url_id) ? @$doc -> url_id : '');
+					$all_matched[$mearged_term]['a_url_id'][] =(isset($doc->a_url_id) ? @$doc -> a_url_id : '');
+					$all_matched[$mearged_term]['kingdom'][] = (isset($doc->kingdom) ? @$doc -> kingdom : '');
+					$all_matched[$mearged_term]['phylum'][] = (isset($doc->phylum) ? @$doc -> phylum : '');
+					$all_matched[$mearged_term]['class'][] = (isset($doc->class) ? @$doc -> class : '');
+					$all_matched[$mearged_term]['order'][] = (isset($doc->order) ? @$doc -> order : '');
+					$all_matched[$mearged_term]['family'][] = (isset($doc->family) ? @$doc -> family : '');
+					$all_matched[$mearged_term]['genus'][] = (isset($doc->genus) ? @$doc -> genus : '');
+					$all_matched[$mearged_term]['taxon_rank'][] = (isset($doc->taxon_rank) ? strtolower(@$doc -> taxon_rank) : '');
+					$all_matched[$mearged_term]['simple_name'][] = (isset($doc->simple_name) ? @$doc -> simple_name : '');
 				}
 
 			}

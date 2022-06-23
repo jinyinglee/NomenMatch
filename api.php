@@ -294,7 +294,7 @@ foreach ($names as $nidx => $name) {
 								$all_matched[$matched_name]['type'] .= $original_type.'/ '."Undecidable: Multiple accepted names of matched synonyms|";
 								$undecide = true;
 							} else {
-								$all_matched[$matched_name]['type'] = $original_type .'|';
+								$all_matched[$matched_name]['type'] .= $original_type .'|';
 							}
 						} else {
 							$all_matched[$matched_name]['type'] .= $original_type .'|';
@@ -436,7 +436,6 @@ function render_table ($data, $time, $hardcsv=false) {
 	// 內文
 	foreach ($data as $nidx => $name_d) {
 		foreach ($name_d as $d) {
-
 			$source_for_type = $d['source'];
 
 			$ncs = $d['namecode'];
@@ -505,6 +504,7 @@ function render_table ($data, $time, $hardcsv=false) {
 
 			$d['type'] = explode('|',$d['type']);
 			$d['type'] = array_filter($d['type']); // 移除空值
+			
 
 			$source_count_values = array_count_values($source_for_type);
 						
@@ -517,10 +517,12 @@ function render_table ($data, $time, $hardcsv=false) {
 
 			// 其他行
 			if ($rowspan > 1){
+				$current_source_index = 0;
+				$type_count = $source_count_values[$source_for_type[0]];
 				foreach (range(1, $rowspan-1) as $n) {
 					echo "<tr class='row_result' id='row_".$serial_no."'>";
 					foreach ($columns as $c) {
-						if ($c == 'matched'){
+						if (($c == 'matched' && !preg_match("/\p{Han}+/u", $d['name']))|| ($c == 'common_name' && preg_match("/\p{Han}+/u", $d['name']))){
 							echo "<td class='matched'>".$d[$c][$n]."</td>";
 						} else {
 							echo "<td>".$d[$c][$n]."</td>";
@@ -528,11 +530,10 @@ function render_table ($data, $time, $hardcsv=false) {
 					}
 					// type
 					if (count(array_unique($d['type'])) >1 && count(explode(" ", $d['matched_cleaned'])) == 1){
-						$current_source_index = 0;
-
-						if ($n == $source_count_values[$source_for_type[$current_source_index]]){
+						if ($n == $type_count){
 							$current_source_index += 1;
-							echo "<td rowspan='".$source_count_values[$source_for_type[$current_source_index]]."'>".$d['type'][$current_source_index]."</td>";
+							$type_count += $source_count_values[$source_for_type[$n]];
+							echo "<td rowspan='".$source_count_values[$source_for_type[$n]]."'>".$d['type'][$current_source_index]."</td>";
 						}
 					}
 					echo "</tr>\n";	

@@ -149,7 +149,7 @@ while ($vals = fgetcsv($fp, 0, "\t" )) {
 	//if ($rec['canonical_name'] == 'Bombyx pernyi') {
 		//var_dump($rec);
 	//}
-	$rec['common_name_c'] = $vals[5];
+	$rec['common_name_c'] = explode(",", $vals[5]);  
 
 	$rec['sound_name'] = treat_word($rec['canonical_name']);
 

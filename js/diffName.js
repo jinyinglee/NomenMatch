@@ -6,8 +6,7 @@ $('.row_result').mouseenter(function() {
     var matched = td_matched.innerHTML;
     var diff = JsDiff.diffChars(input_name, matched);
     var diff_matched = document.createElement('div');
-    console.log(diff);
-
+    console.log($(this).find('.matched'));
 //*
     diff.forEach(function(part){
     // green for additions, red for deletions
@@ -29,3 +28,4 @@ $('.row_result').mouseenter(function() {
     td_matched.setAttribute("class", "name_diff");
   }
 });
+
