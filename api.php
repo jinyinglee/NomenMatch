@@ -37,6 +37,8 @@ $res = array();
 // kim: 每一個輸入的name進行比對
 foreach ($names as $nidx => $name) {
 
+	$name = trim($name, "\t\r\n");
+
 	// kim: 比對前去除掉特殊字元 & trim 空白字元，不保留subgenus的括號
 	if (preg_match("/\p{Han}+/u", $name)){
 		$name_cleaned = trim(preg_replace('/^[\pZ\pC]+|[\pZ\pC]+$/u','',$name), " \t\r\n.,;|");
