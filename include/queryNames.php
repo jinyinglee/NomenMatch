@@ -3,6 +3,8 @@
 require_once "./include/treat_word.inc";
 require_once "./include/cleanname.inc";
 
+require_once "./include/treat_word_c.inc";
+
 /* normalize input data
 if (empty($name)) {
 	return;
@@ -19,11 +21,115 @@ if (!empty($name)) {
 }
 //*/
 
+// echo treat_word_c('台灣');
+
+function sortByKeyOrder(array $sortOrderKeys, array $arrayToSort){
+	$output = [];
+	$new_index = 0;
+	foreach($sortOrderKeys as $index){
+	  if(isset($arrayToSort[$index])){
+		  $output[$new_index] = $arrayToSort[$index];
+		  $new_index += 1;
+	  }
+	}
+ 
+   return $output;
+ }
+
+// kim: 2022-04新增，比對屬以上階層，一次比對一個name
+// *** rank要限制在種以上嗎?
+// $ep = 'http://solr:8983/solr/taxa';
+function queryNameSingle($name, $name_cleaned, $against, $best, $ep){
+
+	extract_results("", "", $reset=true);
+
+	// kim: 搜尋 canonical_name or common_name_c
+	// $name_cleaned = canonical_form($name, true);
+	$columns = array(
+		'matched',
+		'common_name',
+		'accepted_namecode',
+		'namecode',
+		'source',
+		'url_id',
+		'a_url_id',
+		'kingdom',
+		'phylum',
+		'class',
+		'order',
+		'family',
+		'genus',
+		'taxon_rank',
+		'simple_name');
+
+	if ($best=='yes'&&!(preg_match("/\p{Han}+/u", $name_cleaned))) { // best, 不是中文
+		$ep .= '/select?wt=json&fq=is_single_word%3Atrue&rows=0&q=' . rawurlencode($name_cleaned) .'~1';
+	} 
+	elseif ($best=='yes'&&preg_match("/\p{Han}+/u", $name_cleaned)) { // best, 是中文
+		$ep .= '/select?wt=json&rows=0&q=common_name_c:/(' . rawurlencode(treat_word_c($name_cleaned)) . ')/';
+	}
+	elseif (preg_match("/\p{Han}+/u", $name_cleaned)) { // 是中文
+		$ep .= '/select?wt=json&rows=0&q=common_name_c:/.*' . rawurlencode(treat_word_c($name_cleaned)) . '.*/';
+	}
+	elseif (!preg_match("/\p{Han}+/u", $name_cleaned)) { // 不是best, 不是中文
+		$ep .= '/select?wt=json&fq=is_single_word%3Atrue&rows=0&q=' . rawurlencode($name_cleaned) .'~';
+	} 
+
+
+	if (preg_match("/\p{Han}+/u", $name_cleaned)) {
+		extract_results($ep, '', $reset=false, $against=$against, $search_term=$name_cleaned);
+	}else{
+		extract_results($ep, '', $reset=false, $against=$against);
+	}
+	$all_matched_tmp = extract_results();
+	
+	if (!$all_matched_tmp['']['type']=='No match'){
+		foreach ($all_matched_tmp as $m) {
+			// 根據source排序但先保留原始index
+			// 其他欄位也用source排序
+			arsort($m['source']);
+			// print_r($m['source']);
+			$reorder = array_keys($m['source']);
+			foreach ($columns as $c) {
+				$m[$c] = sortByKeyOrder($reorder, $m[$c]);
+				$m[$c] = array_values($m[$c]);
+			}		
+			$all_matched[$m['matched_clean']] = array_merge(array('name' => $name, 'name_cleaned' => $name_cleaned), $m);
+		}
+	} else {
+		foreach ($all_matched_tmp as $m) {
+			$all_matched[$m['matched_clean']] = array_merge(array('name' => $name, 'name_cleaned' => $name_cleaned), $m);
+		}
+	}
+	return $all_matched;
+}
+
+// kim: 以下為原始演算法，如果超過單字，優先以種&種下的方式比對 
 function queryNames ($name, $against, $best, $ep) {
+
+	$columns = array(
+		'matched',
+		'common_name',
+		'accepted_namecode',
+		'namecode',
+		'source',
+		'url_id',
+		'a_url_id',
+		'kingdom',
+		'phylum',
+		'class',
+		'order',
+		'family',
+		'genus',
+		'taxon_rank',
+		'simple_name');
+
+
 	if (empty($ep)) return false;
 
-	$ep .= '/select?wt=json&q=*:*';
+	$ep .= '/select?wt=json&q=*:*&sort=source%20asc'; 
 	// $ep = 'http://localhost:8983/solr/taxa/select?wt=json&q=*:*';
+	// $ep = 'http://solr:8983/solr/taxa/select?wt=json&q=*:*';
 	// $ep = 'http://140.109.28.72/solr4/taxa/select?wt=json&q=*:*';
 
 	extract_results("", "", $reset=true);
@@ -57,6 +163,7 @@ function queryNames ($name, $against, $best, $ep) {
 					'name_cleaned' => $name_cleaned,
 					'matched' => 'N/A',
 					'matched_clean' => 'N/A',
+					'common_name' => 'N/A',
 					'accepted_namecode' => array(),
 					'namecode' => array(),
 					'source' => array(),
@@ -67,8 +174,9 @@ function queryNames ($name, $against, $best, $ep) {
 					'class' => array(),
 					'order' => array(),
 					'family' => array(),
-					'higher_than_family' => array(),
+					'genus' => array(),
 					'type' => 'N/A',
+					'taxon_rank' => array(),
 				)
 			);
 
@@ -143,7 +251,7 @@ function queryNames ($name, $against, $best, $ep) {
 		$query_url_2_genus_err_suggestion = $ep . "&rows=0&spellcheck.q=" . urlencode($lpa2) ;
 		$suggestion = extract_suggestion ($query_url_2_genus_err_suggestion, TYPE_2_GE);
 
-                if (is_null($suggestion)) {
+        if (is_null($suggestion)) {
 			$query_url_2_genus_err_suggestion = $ep . "&rows=0&spellcheck.q=" . urlencode($name_cleaned);
 			$suggestion = array_shift(explode(" ", extract_suggestion ($query_url_2_genus_err_suggestion, TYPE_2_GE)));
 
@@ -201,9 +309,26 @@ function queryNames ($name, $against, $best, $ep) {
 		$all_matched_tmp = extract_results();
 	}
 
-	foreach ($all_matched_tmp as $m) {
-		$all_matched[$m['matched']] = array_merge(array('name' => $name, 'name_cleaned' => $name_cleaned), $m);
+	if (!$all_matched_tmp['']['type']=='No match'){
+		foreach ($all_matched_tmp as $m) {
+			// 根據source排序但先保留原始index
+			// 其他欄位也用source排序
+			arsort($m['source']);
+			// print_r($m['source']);
+			$reorder = array_keys($m['source']);
+			foreach ($columns as $c) {
+				$m[$c] = sortByKeyOrder($reorder, $m[$c]);
+				$m[$c] = array_values($m[$c]);
+			}		
+			$all_matched[$m['matched_clean']] = array_merge(array('name' => $name, 'name_cleaned' => $name_cleaned), $m);
+		}
+	} else {
+		foreach ($all_matched_tmp as $m) {
+			$all_matched[$m['matched_clean']] = array_merge(array('name' => $name, 'name_cleaned' => $name_cleaned), $m);
+		}
 	}
+
+
 /*
 echo "<xmp>";
 var_dump($all_matched);
@@ -235,14 +360,10 @@ function extract_suggestion ($query_url="", $msg="") {
 }
 
 
-function extract_results ($query_url="", $msg="", $reset=false, $against="") {
 
+function extract_results ($query_url="", $msg="", $reset=false, $against="", $search_term="") {
 	static $all_matched = array();
 	static $query_urls = array();
-//	echo "<xmp>";
-//	echo $msg . "\n";
-//	echo "extract results, " . $query_url . "\n";
-//	echo "</xmp>";
 	if ($reset) {
 		$all_matched = array();
 		$query_urls = array();
@@ -260,47 +381,83 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="") {
 			return;
 		}
 		$query_urls[$query_url] = true;
-		$jo = @json_decode(@file_get_contents($query_url));
-                //echo "xxxxxxxxxxxx";
-                //echo $query_url;
-                //echo "<pre>" . var_export($jo, true) . "</pre>";exit();
+
+		$first_query = @json_decode(@file_get_contents($query_url));
+		$numFound = $first_query->response->numFound;
+		if ($numFound > 0){
+			$docs = array();
+			$rows = 100; // 每次回傳 100 rows
+			$offset = 0;
+			$current_url_root = str_replace('rows=0', 'rows=100' ,$query_url);
+			for($i=0 ;  $offset < $numFound ; $i++){
+				$offset = $rows*$i;
+				$current_url = $current_url_root . '&start=' . $offset;
+				$jo = @json_decode(@file_get_contents($current_url));
+				$current_doc = $jo->response->docs;
+				$docs = array_merge($docs, $current_doc);
+			}
+		}
 	}
-	if (!empty($jo) && $jo->response->numFound > 0) {
-		foreach ($jo->response->docs as $doc) {
+	if (!empty($docs) ) {
+		foreach ($docs as $doc) {
 			$doc->is_accepted = ($doc->namecode === $doc->accepted_namecode)?1:0;
 			$matched[] = $doc;
-			if (empty($all_matched[$doc->canonical_name])) {
+			if (preg_match("/\p{Han}+/u", $search_term)) {
+				$mearged_term = $search_term;
+			} else{
+				$mearged_term = $doc->canonical_name;
+			}
+			if (empty($all_matched[$mearged_term])) {
 				unset($all_matched['']);
-				$all_matched[$doc->canonical_name] = array(
-					'matched' => $doc->original_name,
-					'matched_clean' => $doc->canonical_name,
-					'accepted_namecode' => array(@$doc->accepted_namecode),
-					'namecode' => array(@$doc->namecode),
+				$cc = $doc -> common_name_c;
+				if (isset($cc)){
+					$cc = implode(",", $cc);
+				} else {
+					$cc = '';
+				}
+				$all_matched[$mearged_term] = array(
+					'matched_clean' => $mearged_term,
+					'matched' => array((isset($doc->original_name) ? @$doc -> original_name : '')),
+					'common_name' => array($cc),
+					'accepted_namecode' => array((isset($doc->accepted_namecode) ? @$doc -> accepted_namecode : '')),
+					'namecode' => array((isset($doc->namecode) ? @$doc -> namecode : '')),
 					'source' => array(array_shift(explode("-", $doc->id))),
-					'url_id' => array(@$doc->url_id),
-					'a_url_id' => array(@$doc->a_url_id),
-					'kingdom' => array(@$doc->kingdom),
-					'phylum' => array(@$doc->phylum),
-					'class' => array(@$doc->class),
-					'order' => array(@$doc->order),
-					'family' => array(@$doc->family),
-					'higher_than_family' => array(@$doc->order."-".@$doc->class."-".@$doc->phylum."-".@$doc->kingdom),
+					'url_id' => array((isset($doc->url_id) ? @$doc -> url_id : '')),
+					'a_url_id' => array((isset($doc->a_url_id) ? @$doc -> a_url_id : '')),
+					'kingdom' => array((isset($doc->kingdom) ? @$doc -> kingdom : '')),
+					'phylum' => array((isset($doc->phylum) ? @$doc -> phylum : '')),
+					'class' => array((isset($doc->class) ? @$doc -> class : '')),
+					'order' => array((isset($doc->order) ? @$doc -> order : '')),
+					'family' => array((isset($doc->family) ? @$doc -> family : '')),
+					'genus' => array((isset($doc->genus) ? @$doc -> genus : '')),
+					'taxon_rank' => array((isset($doc->taxon_rank) ? strtolower(@$doc -> taxon_rank) : '')),
 					'type' => $msg,
+					'simple_name' => array((isset($doc->simple_name) ? @$doc -> simple_name : '')),
 				);
 			}
 			else {
-				if (!in_array(@$doc->namecode, $all_matched[$doc->canonical_name]['namecode'])) {
-					$all_matched[$doc->canonical_name]['namecode'][] = @$doc->namecode;
-					$all_matched[$doc->canonical_name]['source'][] = array_shift(explode("-", $doc->id));
-					$all_matched[$doc->canonical_name]['accepted_namecode'][] = @$doc->accepted_namecode;
-					$all_matched[$doc->canonical_name]['url_id'][] = @$doc->url_id;
-					$all_matched[$doc->canonical_name]['a_url_id'][] = @$doc->a_url_id;
-					$all_matched[$doc->canonical_name]['kingdom'][] = @$doc->kingdom;
-					$all_matched[$doc->canonical_name]['phylum'][] = @$doc->phylum;
-					$all_matched[$doc->canonical_name]['class'][] = @$doc->class;
-					$all_matched[$doc->canonical_name]['order'][] = @$doc->order;
-					$all_matched[$doc->canonical_name]['family'][] = @$doc->family;
-					$all_matched[$doc->canonical_name]['higher_than_family'][] = @$doc->order."-".@$doc->class."-".@$doc->phylum."-".@$doc->kingdom;
+				$cc = $doc -> common_name_c;
+				if (isset($cc)){
+					$cc = implode(",", $cc);
+				} else {
+					$cc = '';
+				}
+				if (!in_array(@$doc->namecode, $all_matched[$mearged_term]['namecode'])) {
+					$all_matched[$mearged_term]['namecode'][] = (isset($doc->namecode) ? @$doc -> namecode : '');
+					$all_matched[$mearged_term]['matched'][] = (isset($doc->original_name) ? @$doc -> original_name : '');
+					$all_matched[$mearged_term]['common_name'][] = ($cc);
+					$all_matched[$mearged_term]['source'][] = array_shift(explode("-", $doc->id));
+					$all_matched[$mearged_term]['accepted_namecode'][] = (isset($doc->accepted_namecode) ? @$doc->accepted_namecode : '');
+					$all_matched[$mearged_term]['url_id'][] = (isset($doc->url_id) ? @$doc -> url_id : '');
+					$all_matched[$mearged_term]['a_url_id'][] =(isset($doc->a_url_id) ? @$doc -> a_url_id : '');
+					$all_matched[$mearged_term]['kingdom'][] = (isset($doc->kingdom) ? @$doc -> kingdom : '');
+					$all_matched[$mearged_term]['phylum'][] = (isset($doc->phylum) ? @$doc -> phylum : '');
+					$all_matched[$mearged_term]['class'][] = (isset($doc->class) ? @$doc -> class : '');
+					$all_matched[$mearged_term]['order'][] = (isset($doc->order) ? @$doc -> order : '');
+					$all_matched[$mearged_term]['family'][] = (isset($doc->family) ? @$doc -> family : '');
+					$all_matched[$mearged_term]['genus'][] = (isset($doc->genus) ? @$doc -> genus : '');
+					$all_matched[$mearged_term]['taxon_rank'][] = (isset($doc->taxon_rank) ? strtolower(@$doc -> taxon_rank) : '');
+					$all_matched[$mearged_term]['simple_name'][] = (isset($doc->simple_name) ? @$doc -> simple_name : '');
 				}
 
 			}
@@ -311,8 +468,9 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="") {
 	}
 	elseif (empty($all_matched)) {
 		$all_matched[''] = array(
-			'matched' => '',
+			'matched' => array(),
 			'matched_clean' => '',
+			'common_name' => '',
 			'accepted_namecode' => array(),
 			'namecode' => array(),
 			'source' => array(),
@@ -323,11 +481,14 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="") {
 			'class' => array(),
 			'order' => array(),
 			'family' => array(),
-			'higher_than_family' => array(),
-			'type' => 'no match'
+			'genus' => array(),
+			'taxon_rank' => array(),
+			'type' => 'No match',
+			'simple_name' => array(),
 		);
 	}
 }
+
 
 // confusing OCR results or hand writings
 function similar_char($a, $b, $aplus1='', $bplus1='') {
