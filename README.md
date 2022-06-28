@@ -50,6 +50,10 @@ Install by docker-compose
   $ php ./importChecklistToSolr.php ../source-data/<taicol-checklist.csv> taicol
   ```
 
+> **Note**
+> when re-index source csv, must remove docker volume, or solr will show "source" inconsistent error
+> 
+> $ docker volume rm nomenmatch_solr-data
 
 Update source data in docker
 ---------------------------------------
