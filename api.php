@@ -713,7 +713,7 @@ function render_json ($data, $time, $best, $against) {
 			'best' => $best,
 			'source' => $against,
 			),
-		'results' => $results,
+		'data' => $results,
 		));
 }
 
