@@ -663,9 +663,13 @@ function render_json ($data, $time, $best, $against) {
 		'genus',
 		'taxon_rank');
 
+	
 	$results = array();
+	//$test = array();
 
 	foreach($data as $d){
+		$tmp_res = array();
+	
 		foreach($d as $dsub){
 			$types = explode('|',$dsub['type']);
 			$types = array_filter($types ); // 移除空值
@@ -695,9 +699,13 @@ function render_json ($data, $time, $best, $against) {
 				array_push($tmp_results, $tmp);
 			}
 			$tmp_array['results'] = $tmp_results;
-			array_push($results, $tmp_array);
+			//array_push($results, $tmp_array);
+			array_push($tmp_res, $tmp_array);
 		}
+		array_push($results, $tmp_res);
 	}
+
+	//print_r($test);
 
 	echo json_encode(array(
 		'query' => array(
@@ -705,7 +713,7 @@ function render_json ($data, $time, $best, $against) {
 			'best' => $best,
 			'source' => $against,
 			),
-		'data' => $results,
+		'results' => $results,
 		));
 }
 

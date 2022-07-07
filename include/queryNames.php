@@ -403,11 +403,11 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $se
 			$doc->is_accepted = ($doc->namecode === $doc->accepted_namecode)?1:0;
 			$matched[] = $doc;
 			if (preg_match("/\p{Han}+/u", $search_term)) {
-				$mearged_term = $search_term;
+				$merged_term = $search_term;
 			} else{
-				$mearged_term = $doc->canonical_name;
+				$merged_term = $doc->canonical_name;
 			}
-			if (empty($all_matched[$mearged_term])) {
+			if (empty($all_matched[$merged_term])) {
 				unset($all_matched['']);
 				$cc = $doc -> common_name_c;
 				if (isset($cc)){
@@ -415,8 +415,8 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $se
 				} else {
 					$cc = '';
 				}
-				$all_matched[$mearged_term] = array(
-					'matched_clean' => $mearged_term,
+				$all_matched[$merged_term] = array(
+					'matched_clean' => $merged_term,
 					'matched' => array((isset($doc->original_name) ? @$doc -> original_name : '')),
 					'common_name' => array($cc),
 					'accepted_namecode' => array((isset($doc->accepted_namecode) ? @$doc -> accepted_namecode : '')),
@@ -442,22 +442,22 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $se
 				} else {
 					$cc = '';
 				}
-				if (!in_array(@$doc->namecode, $all_matched[$mearged_term]['namecode'])) {
-					$all_matched[$mearged_term]['namecode'][] = (isset($doc->namecode) ? @$doc -> namecode : '');
-					$all_matched[$mearged_term]['matched'][] = (isset($doc->original_name) ? @$doc -> original_name : '');
-					$all_matched[$mearged_term]['common_name'][] = ($cc);
-					$all_matched[$mearged_term]['source'][] = array_shift(explode("-", $doc->id));
-					$all_matched[$mearged_term]['accepted_namecode'][] = (isset($doc->accepted_namecode) ? @$doc->accepted_namecode : '');
-					$all_matched[$mearged_term]['url_id'][] = (isset($doc->url_id) ? @$doc -> url_id : '');
-					$all_matched[$mearged_term]['a_url_id'][] =(isset($doc->a_url_id) ? @$doc -> a_url_id : '');
-					$all_matched[$mearged_term]['kingdom'][] = (isset($doc->kingdom) ? @$doc -> kingdom : '');
-					$all_matched[$mearged_term]['phylum'][] = (isset($doc->phylum) ? @$doc -> phylum : '');
-					$all_matched[$mearged_term]['class'][] = (isset($doc->class) ? @$doc -> class : '');
-					$all_matched[$mearged_term]['order'][] = (isset($doc->order) ? @$doc -> order : '');
-					$all_matched[$mearged_term]['family'][] = (isset($doc->family) ? @$doc -> family : '');
-					$all_matched[$mearged_term]['genus'][] = (isset($doc->genus) ? @$doc -> genus : '');
-					$all_matched[$mearged_term]['taxon_rank'][] = (isset($doc->taxon_rank) ? strtolower(@$doc -> taxon_rank) : '');
-					$all_matched[$mearged_term]['simple_name'][] = (isset($doc->simple_name) ? @$doc -> simple_name : '');
+				if (!in_array(@$doc->namecode, $all_matched[$merged_term]['namecode'])) {
+					$all_matched[$merged_term]['namecode'][] = (isset($doc->namecode) ? @$doc -> namecode : '');
+					$all_matched[$merged_term]['matched'][] = (isset($doc->original_name) ? @$doc -> original_name : '');
+					$all_matched[$merged_term]['common_name'][] = ($cc);
+					$all_matched[$merged_term]['source'][] = array_shift(explode("-", $doc->id));
+					$all_matched[$merged_term]['accepted_namecode'][] = (isset($doc->accepted_namecode) ? @$doc->accepted_namecode : '');
+					$all_matched[$merged_term]['url_id'][] = (isset($doc->url_id) ? @$doc -> url_id : '');
+					$all_matched[$merged_term]['a_url_id'][] =(isset($doc->a_url_id) ? @$doc -> a_url_id : '');
+					$all_matched[$merged_term]['kingdom'][] = (isset($doc->kingdom) ? @$doc -> kingdom : '');
+					$all_matched[$merged_term]['phylum'][] = (isset($doc->phylum) ? @$doc -> phylum : '');
+					$all_matched[$merged_term]['class'][] = (isset($doc->class) ? @$doc -> class : '');
+					$all_matched[$merged_term]['order'][] = (isset($doc->order) ? @$doc -> order : '');
+					$all_matched[$merged_term]['family'][] = (isset($doc->family) ? @$doc -> family : '');
+					$all_matched[$merged_term]['genus'][] = (isset($doc->genus) ? @$doc -> genus : '');
+					$all_matched[$merged_term]['taxon_rank'][] = (isset($doc->taxon_rank) ? strtolower(@$doc -> taxon_rank) : '');
+					$all_matched[$merged_term]['simple_name'][] = (isset($doc->simple_name) ? @$doc -> simple_name : '');
 				}
 
 			}
