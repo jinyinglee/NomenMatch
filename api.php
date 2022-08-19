@@ -6,8 +6,13 @@ ini_set("memory_limit", "1024M");
 set_time_limit(3600);
 $stime = microtime(true);
 
-$names = explode("|", str_replace("\n", "|", @$_REQUEST['names']));
+if (!empty($_REQUEST['names'])){
+	$names = explode("|", str_replace("\n", "|", @$_REQUEST['names']));
+} else {
+	$names = explode("|", str_replace("\n", "|", @$_POST['names']));
+}
 $names = array_filter($names); // 移除空值
+$names_str = implode("|",$names);
 
 require_once "./include/functions.php";
 
@@ -26,13 +31,71 @@ else {
 
 require_once "./include/queryNames.php";
 
-$format = (!empty($_REQUEST['format']))?$_REQUEST['format']:'';
-$against = (!empty($_REQUEST['source']))?$_REQUEST['source']:''; // source backbone 
-$best = (!empty($_REQUEST['best']))?$_REQUEST['best']:'yes';
+// $format = (!empty($_REQUEST['format']))?$_REQUEST['format']:'';
+
+if (!empty($_REQUEST['format'])){
+	$format = $_REQUEST['format'];
+} else {
+	(!empty($_POST['format']))?$_POST['format']:'';
+}
+
+// $against = (!empty($_REQUEST['source']))?$_REQUEST['source']:''; // source backbone 
+if (!empty($_REQUEST['source'])){
+	$against = $_REQUEST['source'];
+} else {
+	$against = (!empty($_POST['source']))?$_POST['source']:'';
+}
+
+// $best = (!empty($_REQUEST['best']))?$_REQUEST['best']:'yes';
+if (!empty($_REQUEST['best'])){
+	$best = $_REQUEST['best'];
+} else {
+	$best = (!empty($_POST['best']))?$_POST['best']:'yes';
+}
+
 $ep = (!empty($_REQUEST['ep']))?$_REQUEST['ep']:file_get_contents(dirname(realpath(__FILE__)).'/conf/solr_endpoint'); // endpoint
 $ep = trim($ep, " /\r\n");
 
 $res = array();
+
+if (count($names)>20 & $format!='csv' & $format!='json'){
+	$total_page = ceil(count($names) / 20);
+	$params = $_REQUEST;
+	// 重新寫url, 不然會無限延長
+	$params = Array();
+	$params['format'] = $format;
+	$params['best'] = $best;
+	$params['against'] = $against;
+	$params['ep'] = $ep;
+	$params['names'] = implode("|",$names);;
+
+	$page = (!empty($_REQUEST['page']))?$_REQUEST['page']:1; // current page
+
+	$params['page'] = $page + 1;  // next page
+	$uri = '/api.php?';
+	$x = http_build_query($params);
+	if ($page + 1 <= $total_page){
+		$next_page = $page + 1;
+	} else {
+		$next_page = '';
+	}
+	if (($page - 1) > 0){
+		$params['page'] = $page - 1;  // previous page
+		$x = http_build_query($params);
+		$previous_page = $page - 1;
+	} else {
+		$previous_page = '';
+	}
+		
+	// 每次10筆
+	$names = array_slice($names, ($page-1)*20, 20);
+
+} else {
+	$next_page = '';
+	$previous_page = '';
+}
+
+
 
 // kim: 每一個輸入的name進行比對
 foreach ($names as $nidx => $name) {
@@ -320,8 +383,7 @@ foreach ($names as $nidx => $name) {
 
 $etime = microtime(true);
 
-
-render($res, $format, $etime - $stime, $best, $against);
+render($res, $format, $etime - $stime, $best, $against, $next_page, $previous_page, $names_str);
 
 
 function color_class ($idx) {
@@ -343,7 +405,7 @@ function color_class ($idx) {
 }
 
 
-function render_table ($data, $time, $hardcsv=false) {
+function render_table ($data, $time, $hardcsv=false, $next_page, $previous_page,$names_str) {
 	header("Content-type: text/html; charset=utf-8");
 	$src_conf = read_src_conf();
 
@@ -415,7 +477,26 @@ function render_table ($data, $time, $hardcsv=false) {
 	echo "matched diff: <span style='color:blue;'>added</span> <span style='color:grey;'>common</span><br/>";
 	echo "source: <span style='color:#DC143C;'>accepted</span> <span>invalid</span>";
 	echo "</p>";
-	
+	if ($previous_page!=''){
+		echo "<button onclick='$(`input[name=page]`).val(" .$previous_page. "); $(`form`).submit();'> Previous page</button>";
+	}
+	if ($next_page!=''){
+		echo "<button onclick='$(`input[name=page]`).val(" .$next_page. "); $(`form`).submit();'> Next page</button>";
+	}
+	//echo $names;
+	//if (count($names)>20){
+	//	foreach(range(1,(count($names)/20)+1) as $i) {
+	//		echo count($names);
+	//			echo "<div id='page-".$i."' style='display: none'>".implode("|",array_slice($names, ($i-1)*20, 20))."</div>";
+	//	}
+	//}
+	echo "<form action='api.php' method='POST'>";
+	echo "<input type='hidden' name='names' value='".$names_str."'>";
+	echo "<input type='hidden' name='source' value='".$against."'>";
+	echo "<input type='hidden' name='best' value='".$best."'>";
+	echo "<input type='hidden' name='page' value=''>";
+	//echo "<input type='submit'>";
+	echo "</form>";
 	echo "<table class='table table-bordered' style='width: 95vw'>";
 
 	$tmp_data0 = $data[0][0];
@@ -645,7 +726,7 @@ function render_csv ($data) {
     }
 }
 
-function render_json ($data, $time, $best, $against) {
+function render_json ($data, $time, $best, $against, $next_page, $previous_page, $names_str) {
 	header('Content-Type: application/json; charset=utf-8');
 
 	$columns = array(
@@ -718,14 +799,15 @@ function render_json ($data, $time, $best, $against) {
 }
 
 
-function render ($data, $format='table', $time, $best, $against) {
-
+function render ($data, $format='table', $time, $best, $against, $next_page, $previous_page,$names_str) {
 	$func_name = "render_" . $format;
-	if (function_exists($func_name)) {
-		call_user_func($func_name, $data, $time, $best, $against);
+	if ($func_name=='render_table'){
+		render_table($data, $time, $hardcsv=false, $next_page, $previous_page,$names_str);
+	} else if (function_exists($func_name)) {
+		call_user_func($func_name, $data, $time, $best, $against, $next_page=$next_page, $previous_page=$previous_page,$names_str);
 	}
 	else {
-		render_table($data, $time);
+		render_table($data, $time, $hardcsv=false, $next_page, $previous_page,$names_str);
 	}
 }
 
