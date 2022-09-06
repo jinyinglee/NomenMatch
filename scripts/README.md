@@ -27,8 +27,8 @@ Install by docker-compose
 ```bash
   $ docker-compose exec solr bash
   $ ./bin/solr create_core -c taxa
-  # $ cp solrconfig.xml /var/solr/data/taxa/conf
-  $ cp schema.xml /var/solr/data/taxa/conf
+  $ cp solrconfig.xml /var/solr/data/taxa/conf
+  # $ cp schema.xml /var/solr/data/taxa/conf
   $ cp managed-schema /var/solr/data/taxa/conf
 ```
 
@@ -36,7 +36,7 @@ Install by docker-compose
 
 - prepare source data csv and put it in `source-data` folder (ex: taicol-checklist.csv)
 - copy conf/sources.csv to `source-data` folder if `source-data` don't have sources.csv
-- modified souces.csv to map source id and source info
+- modified sources.csv to map source id and source info
 
 ```bash
   $ cp conf/sources.csv source-data 
@@ -48,12 +48,13 @@ Install by docker-compose
   $ docker-compose exec php bash
   $ cd /code/workspace
   $ php ./importChecklistToSolr.php ../source-data/<taicol-checklist.csv> taicol
+  $ docker-compose exec -d -u 0 php bash -c 'cd /code/workspace/; nohup php ./importChecklistToSolr.php ../source-data/<file> <source> &> output'
   ```
 
-> **Note**
-> when re-index source csv, must remove docker volume, or solr will show "source" inconsistent error
-> 
-> $ docker volume rm nomenmatch_solr-data
+Run in background
+```
+docker-compose exec -d -u 0 php bash -c 'cd /code/workspace/; nohup php ./importChecklistToSolr.php ../source-data/source_col_20220516.csv col &> output'
+```
 
 Update source data in docker
 ---------------------------------------
@@ -126,6 +127,7 @@ Under workspace dir, run
 php importChecklistToSolr.php {/path/to/source_data.csv} [source_id]
 ```
 if [source_id] is empty, \"source_data\" will be used as the source_id  
+note: import one source at a time
 
 Source data format
 -----
