@@ -8,7 +8,7 @@ services:
     image: nomenmatch-solr:8
     restart: always
     ports:
-      - "8983:8983"
+      - "8984:8983"
     volumes:
       - solr-data:/var/solr/data
       - ./solr-workspace:/workspace
@@ -19,7 +19,7 @@ services:
   nginx:
     image: nginx:latest
     ports:
-        - "8080:80"
+        - "8080:81"
     volumes:
         - ./:/code
         - ./compose/nginx:/etc/nginx/conf.d
