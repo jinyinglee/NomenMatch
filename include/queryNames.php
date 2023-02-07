@@ -46,11 +46,11 @@ function queryNameSingle($name, $name_cleaned, $against, $best, $ep){
 	// kim: 搜尋 canonical_name or common_name_c
 	// $name_cleaned = canonical_form($name, true);
 	$columns = array(
-		
 		'matched',
 		'common_name',
 		'accepted_namecode',
 		'namecode',
+		'name_status',
 		'source',
 		'url_id',
 		'a_url_id',
@@ -61,7 +61,8 @@ function queryNameSingle($name, $name_cleaned, $against, $best, $ep){
 		'family',
 		'genus',
 		'taxon_rank',
-		'simple_name','id');
+		'simple_name',
+		'id');
 
 	if ($best=='yes'&&!(preg_match("/\p{Han}+/u", $name_cleaned))) { // best, 不是中文
 		$ep .= '/select?wt=json&fq=is_single_word%3Atrue&rows=0&q=' . rawurlencode($name_cleaned) .'~1';
@@ -109,11 +110,11 @@ function queryNameSingle($name, $name_cleaned, $against, $best, $ep){
 function queryNames ($name, $against, $best, $ep) {
 
 	$columns = array(
-		
 		'matched',
 		'common_name',
 		'accepted_namecode',
 		'namecode',
+		'name_status',
 		'source',
 		'url_id',
 		'a_url_id',
@@ -124,8 +125,8 @@ function queryNames ($name, $against, $best, $ep) {
 		'family',
 		'genus',
 		'taxon_rank',
-		'simple_name','id');
-
+		'simple_name',
+		'id');
 
 	if (empty($ep)) return false;
 
@@ -168,6 +169,7 @@ function queryNames ($name, $against, $best, $ep) {
 					'common_name' => 'N/A',
 					'accepted_namecode' => array(),
 					'namecode' => array(),
+					'name_status' => array(),
 					'source' => array(),
 					'url_id' => array(),
 					'a_url_id' => array(),
@@ -423,6 +425,7 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $se
 					'common_name' => array($cc),
 					'accepted_namecode' => array((isset($doc->accepted_namecode) ? @$doc -> accepted_namecode : '')),
 					'namecode' => array((isset($doc->namecode) ? @$doc -> namecode : '')),
+					'name_status' => array((isset($doc->name_status) ? @$doc -> name_status : '')),
 					'source' => array((isset($doc->source) ? @$doc -> source : '')),
 					'url_id' => array((isset($doc->url_id) ? @$doc -> url_id : '')),
 					'a_url_id' => array((isset($doc->a_url_id) ? @$doc -> a_url_id : '')),
@@ -450,6 +453,7 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $se
 					$all_matched[$merged_term]['namecode'][] = (isset($doc->namecode) ? @$doc -> namecode : '');
 					$all_matched[$merged_term]['matched'][] = (isset($doc->original_name) ? @$doc -> original_name : '');
 					$all_matched[$merged_term]['common_name'][] = ($cc);
+					$all_matched[$merged_term]['name_status'][] = (isset($doc->name_status) ? @$doc -> name_status : '');
 					$all_matched[$merged_term]['source'][] = (isset($doc->source) ? @$doc -> source : '');
 					$all_matched[$merged_term]['accepted_namecode'][] = (isset($doc->accepted_namecode) ? @$doc->accepted_namecode : '');
 					$all_matched[$merged_term]['url_id'][] = (isset($doc->url_id) ? @$doc -> url_id : '');
@@ -478,6 +482,7 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $se
 			'common_name' => '',
 			'accepted_namecode' => array(),
 			'namecode' => array(),
+			'name_status' => array(),
 			'source' => array(),
 			'url_id' => array(),
 			'a_url_id' => array(),
