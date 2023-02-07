@@ -96,7 +96,6 @@ if (count($names)>20 & $format!='csv' & $format!='json'){
 }
 
 
-
 // kim: 每一個輸入的name進行比對
 foreach ($names as $nidx => $name) {
 
@@ -506,16 +505,16 @@ function render_table ($data, $time, $hardcsv=false, $next_page, $previous_page,
 
 	$columns = array_keys($tmp_data0);
 
-	$titles = array('search<br/>term', 'matched<br/>clean', 'matched', 'common<br/>name','accepted<br/>namecode','namecode','source','kingdom',
-					 'phylum','class','order','family','genus','taxon<br/>rank','match<br/>type');
+	$titles = array('search<br/>term','matched<br/>clean','matched','common<br/>name','accepted<br/>namecode','namecode',
+					'name<br/>status','source','kingdom','phylum','class','order','family','genus','taxon<br/>rank','match<br/>type');
 	
 	// 標題
 	echo "<tbody><tr class='title'><td>" . implode("</td><td>", $titles) . "</td></tr></tbody>\n";
 	// $prev_score = -100;
 	unset($columns[0]); // name
 	unset($columns[1]); // matched_clean
-	unset($columns[14]); // type
-	unset($columns[15]); // simple_name
+	unset($columns[15]); // type
+	unset($columns[16]); // id
 	// 內文
 	foreach ($data as $nidx => $name_d) {
 		foreach ($name_d as $d) {
@@ -673,6 +672,7 @@ function render_csv ($data) {
 		'common_name',
 		'accepted_namecode',
 		'namecode',
+		'name_status',
 		'source',
 		'kingdom',
 		'phylum',
@@ -735,6 +735,7 @@ function render_json ($data, $time, $best, $against, $next_page, $previous_page,
 		'common_name',
 		'accepted_namecode',
 		'namecode',
+		'name_status',
 		'source',
 		'kingdom',
 		'phylum',

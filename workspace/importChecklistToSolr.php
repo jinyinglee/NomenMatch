@@ -95,6 +95,7 @@ while ($vals = fgetcsv($fp, 0, "\t" )) {
 	 * 11 phylum
 	 * 12 kingdom
 	 * 13 simple_name
+	 * 14 name_status
 	 */
 
 	$rec = array();
@@ -110,6 +111,7 @@ while ($vals = fgetcsv($fp, 0, "\t" )) {
 	}
 
 	$rec['simple_name'] = $vals[13];
+	$rec['name_status'] = $vals[14];
 	
 	// kim: 只取單字
 	$rec['genus'] = array_shift(explode(" ", $vals[7]));

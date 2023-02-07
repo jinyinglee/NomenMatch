@@ -24,12 +24,14 @@ Install by docker-compose
 
 3) create solr core & set custom config (only first time)
 
+*這邊已經改成第一次會自動在dockerfile執行
+
 ```bash
   $ docker-compose exec solr bash
   $ ./bin/solr create_core -c taxa
-  $ cp solrconfig.xml /var/solr/data/taxa/conf
-  # $ cp schema.xml /var/solr/data/taxa/conf
-  $ cp managed-schema /var/solr/data/taxa/conf
+  $ cp /solr-config/solrconfig.xml /var/solr/data/taxa/conf
+  $ cp /solr-config/managed-schema /var/solr/data/taxa/conf
+  $ docker-compose restart solr
 ```
 
 4) prepare data
@@ -47,13 +49,12 @@ Install by docker-compose
 ```bash
   $ docker-compose exec php bash
   $ cd /code/workspace
-  $ php ./importChecklistToSolr.php ../source-data/<taicol-checklist.csv> taicol
-  $ docker-compose exec -d -u 0 php bash -c 'cd /code/workspace/; nohup php ./importChecklistToSolr.php ../source-data/<file> <source> &> output'
-  ```
+  $ php ./importChecklistToSolr.php ../source-data/<file-name> taicol
+```
 
 Run in background
 ```
-docker-compose exec -d -u 0 php bash -c 'cd /code/workspace/; nohup php ./importChecklistToSolr.php ../source-data/source_col_20220516.csv col &> output'
+docker-compose exec -d -u 0 php bash -c 'cd /code/workspace/; nohup php ./importChecklistToSolr.php ../source-data/<file-name> <source> &> output'
 ```
 
 Update source data in docker
