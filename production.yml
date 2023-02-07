@@ -11,7 +11,7 @@ services:
       - "8983:8983"
     volumes:
       - solr-data:/var/solr/data
-      - ../nm-volumes/solr:/var/solr
+      - ./conf/solr-config:/solr-config
     command:
       - solr-precreate
       #- gettingstarted

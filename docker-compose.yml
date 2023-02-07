@@ -12,7 +12,7 @@ services:
     volumes:
       - solr-data:/var/solr/data
       - ./solr-workspace:/workspace
-      - ../nm-volumes/solr:/var/solr
+      - ./conf/solr-config:/solr-config
     command:
       - solr-precreate
       #- gettingstarted
