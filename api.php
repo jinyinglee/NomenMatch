@@ -574,7 +574,7 @@ function render_table ($data, $time, $hardcsv=false, $next_page, $previous_page,
 			$rowspan = count($d['accepted_namecode']);
 
 			// 第一行
-			echo "<tr class='row_result' id='row_".$serial_no."'><td>".$d['score']."</td><td rowspan='".$rowspan."'>";
+			echo "<tr class='row_result' id='row_".$serial_no."'><td rowspan='".$rowspan."'>".$d['score']."</td><td rowspan='".$rowspan."'>";
 			echo $d['name']."</td>";
 			echo "<td rowspan='".$rowspan."'>".$d['matched_clean']."</td>";
 			foreach ($columns as $c) {
