@@ -415,7 +415,7 @@ function render_table ($data, $time, $hardcsv=false, $next_page, $previous_page,
 		'url_id',
 		'a_url_id',
 		'best',
-		'score',
+		//'score',
 		'simple_name'
 	);
 
@@ -505,16 +505,17 @@ function render_table ($data, $time, $hardcsv=false, $next_page, $previous_page,
 
 	$columns = array_keys($tmp_data0);
 
-	$titles = array('search<br/>term','matched<br/>clean','matched','common<br/>name','accepted<br/>namecode','namecode',
+	$titles = array('score','search<br/>term','matched<br/>clean','matched','common<br/>name','accepted<br/>namecode','namecode',
 					'name<br/>status','source','kingdom','phylum','class','order','family','genus','taxon<br/>rank','match<br/>type');
 	
 	// 標題
 	echo "<tbody><tr class='title'><td>" . implode("</td><td>", $titles) . "</td></tr></tbody>\n";
 	// $prev_score = -100;
-	unset($columns[0]); // name
-	unset($columns[1]); // matched_clean
-	unset($columns[15]); // type
-	unset($columns[16]); // id
+	unset($columns[0]); // score
+	unset($columns[1]); // name
+	unset($columns[2]); // matched_clean
+	unset($columns[16]); // type
+	unset($columns[17]); // id
 	// 內文
 	foreach ($data as $nidx => $name_d) {
 		foreach ($name_d as $d) {
@@ -573,7 +574,7 @@ function render_table ($data, $time, $hardcsv=false, $next_page, $previous_page,
 			$rowspan = count($d['accepted_namecode']);
 
 			// 第一行
-			echo "<tr class='row_result' id='row_".$serial_no."'><td rowspan='".$rowspan."'>";
+			echo "<tr class='row_result' id='row_".$serial_no."'><td>".$d['score']."</td><td rowspan='".$rowspan."'>";
 			echo $d['name']."</td>";
 			echo "<td rowspan='".$rowspan."'>".$d['matched_clean']."</td>";
 			foreach ($columns as $c) {
@@ -587,7 +588,6 @@ function render_table ($data, $time, $hardcsv=false, $next_page, $previous_page,
 			$d['type'] = explode('|',$d['type']);
 			$d['type'] = array_filter($d['type']); // 移除空值
 			
-
 			$source_count_values = array_count_values($source_for_type);
 						
 			if (count(array_unique($d['type'])) >1 && count(explode(" ", $d['matched_cleaned'])) == 1){
@@ -665,6 +665,7 @@ function render_csv ($data) {
 	// echo "sep=\t\n";
 
 	$header = array(
+		'score',
 		'search_term',
 		'matched_clean',
 		'matched',
@@ -684,9 +685,10 @@ function render_csv ($data) {
 		'match_type');
 
 	$columns = $header;
-	unset($columns[15]); // match_type
-	unset($columns[0]); // search_term
-	unset($columns[1]); // matched_clean
+	//unset($columns[16]); // match_type
+	unset($columns[1]); // search_term
+	unset($columns[2]); // matched_clean
+	unset($columns[0]); // score
 
 	$results = array();
 	array_push($results, $header);
@@ -702,6 +704,7 @@ function render_csv ($data) {
 			$tmp_keys = array_keys($dsub['matched']);
 			foreach($tmp_keys as $k){
 				$tmp = array();
+				$tmp['score'] = $dsub['score'];
 				$tmp['search_term'] = $dsub['name'];
 				$tmp['matched_clean'] = $dsub['matched_clean'];
 				foreach($columns as $c){
@@ -744,7 +747,6 @@ function render_json ($data, $time, $best, $against, $next_page, $previous_page,
 		'family',
 		'genus',
 		'taxon_rank');
-
 	
 	$results = array();
 	//$test = array();
@@ -761,7 +763,8 @@ function render_json ($data, $time, $best, $against, $next_page, $previous_page,
 
 			$tmp_array = array(
 				'search_term' => $dsub['name'],
-				'matched_clean' => $dsub['matched_clean']
+				'matched_clean' => $dsub['matched_clean'],
+				'score' => $dsub['score']
 			);
 			$tmp_keys = array_keys($dsub['matched']);
 			$tmp_results = array();
