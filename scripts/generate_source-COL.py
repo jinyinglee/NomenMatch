@@ -5,7 +5,7 @@ from datetime import date
 today = date.today()
 today_str = today.strftime("%Y%m%d")
 
-df = pd.read_table('/Users/taibif/Documents/04-TaiCOL/2022-03-21_dwca/Taxon.tsv', sep='\t', usecols=['dwc:taxonID', 'dwc:acceptedNameUsageID','dwc:scientificName','dwc:taxonRank','dwc:parentNameUsageID','dwc:scientificNameAuthorship'])
+df = pd.read_table('/Users/taibif/Documents/04-TaiCOL/2023-01-12-col-dwca/Taxon.tsv', sep='\t', usecols=['dwc:taxonID', 'dwc:acceptedNameUsageID','dwc:scientificName','dwc:taxonRank','dwc:parentNameUsageID','dwc:scientificNameAuthorship','dwc:taxonomicStatus'])
 df['common_name_c'] = None
 df['kingdom'] = None
 df['phylum'] = None
@@ -37,7 +37,7 @@ def find_parent(x, i):
         if parent_rank not in ['kingdom', None]:
             find_parent(value, i) 
 
-for i in df.index: #4463570
+for i in df.index: #4848691
     key = df.iloc[i]['dwc:acceptedNameUsageID'] if df.iloc[i]['dwc:acceptedNameUsageID'] else df.iloc[i]['dwc:taxonID']
     find_parent(key,i)
     if i % 1000 == 0:
@@ -45,7 +45,7 @@ for i in df.index: #4463570
 
 
 df = df[['dwc:taxonID','dwc:acceptedNameUsageID','dwc:scientificName','dwc:taxonID','dwc:acceptedNameUsageID', 
-         'common_name_c', 'dwc:taxonRank', 'genus', 'family', 'order', 'class', 'phylum', 'kingdom', 'simple_name']]
+         'common_name_c', 'dwc:taxonRank', 'genus', 'family', 'order', 'class', 'phylum', 'kingdom', 'simple_name','dwc:taxonomicStatus']]
 
 df = df.replace({np.nan: None})
 
@@ -55,6 +55,7 @@ df.to_csv(f'./source-data/source_col_{today_str}.csv', sep='\t', header=None, in
 
 source = pd.read_table('./source-data/sources.csv', sep='\t', header=None)
 # id 不可動
+# source = source.append({0:'col'},ignore_index=True)
 # name
 source.loc[source[0]=='col',1] = 'COL' 
 # url_base
@@ -64,6 +65,6 @@ source.loc[source[0]=='col',3] = 'Bánki, O., Roskov, Y., Döring, M., Ower, G.,
 # url
 source.loc[source[0]=='col',4] = 'https://www.catalogueoflife.org/data/download'
 # version 下載檔案上的日期
-source.loc[source[0]=='col',5] = '2022-03-21'
+source.loc[source[0]=='col',5] = '2023-01-12'
 
 source.to_csv('./source-data/sources.csv', sep='\t', header=None, index=None)
