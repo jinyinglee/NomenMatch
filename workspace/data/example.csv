@@ -1,20 +1,100 @@
-AFD-Pul-1000	AFD-Pul-1000	Tasmaphena sinclairi 	287f4d11c523beaf8414f875453e3ea9	287f4d11c523beaf8414f875453e3ea9	Rhytididae	Stylommatophora	Gastropoda	Mollusca	Animalia
-AFD-Pul-1004	AFD-Pul-1004	Tasmaphena helmsiana 	e85f9db2d911b40224d105fd17a04390	e85f9db2d911b40224d105fd17a04390	Rhytididae	Stylommatophora	Gastropoda	Mollusca	Animalia
-AFD-Pul-1008	AFD-Pul-1008	Torresiropa spaldingi 	3a54d7b99c2b7758694e9ca213e14ae0	3a54d7b99c2b7758694e9ca213e14ae0	Rhytididae	Stylommatophora	Gastropoda	Mollusca	Animalia
-AFD-Pul-1015	AFD-Pul-1015	Victaphanta atramentaria 	40dfca182d0cfdb9345b7bfdca1b1fe3	40dfca182d0cfdb9345b7bfdca1b1fe3	Rhytididae	Stylommatophora	Gastropoda	Mollusca	Animalia
-AFD-Pul-1017	AFD-Pul-1017	Victaphanta compacta 	a143f2a5c17653e5580a03c15721485d	a143f2a5c17653e5580a03c15721485d	Rhytididae	Stylommatophora	Gastropoda	Mollusca	Animalia
-AFD-Pul-1019	AFD-Pul-1019	Victaphanta lampra 	7d9ed1f5b538e6835697d0b5909a83b0	7d9ed1f5b538e6835697d0b5909a83b0	Rhytididae	Stylommatophora	Gastropoda	Mollusca	Animalia
-AFD-Pul-1021	AFD-Pul-1021	Victaphanta milligani 	33f2b254a282cf34c19b55801ae3a204	33f2b254a282cf34c19b55801ae3a204	Rhytididae	Stylommatophora	Gastropoda	Mollusca	Animalia
-AFD-Pul-1028	AFD-Pul-1028	Anoglypta launcestonensis 	5e0bdbafc55b25b7871da8245da65a59	5e0bdbafc55b25b7871da8245da65a59	Caryodidae	Stylommatophora	Gastropoda	Mollusca	Animalia
-AFD-Pul-1032	AFD-Pul-1032	Brazieresta larreyi 	29e9d8c3a2b06d5930122eee1d175f97	29e9d8c3a2b06d5930122eee1d175f97	Caryodidae	Stylommatophora	Gastropoda	Mollusca	Animalia
-AFD-Pul-1036	AFD-Pul-1036	Caryodes dufresnii 	c32a0afcd23423e088c63d305042324a	c32a0afcd23423e088c63d305042324a	Caryodidae	Stylommatophora	Gastropoda	Mollusca	Animalia
-W-Msc-387202	W-Msc-386073	Stenoplax circumsenta 	1a6e48420d0ddc866dec53698ba8a51b	c8d20223533ae63b9e21b58e8632086f	Ischnochitonidae	Chitonida	Polyplacophora	Mollusca	Animalia
-W-Msc-387203	W-Msc-386074	Ischnochiton corrugatus 	8be274fb1079aea0b4bf1274cc29066b	9aa598c6e82699322734268bafbf1148	Ischnochitonidae	Chitonida	Polyplacophora	Mollusca	Animalia
-W-Msc-387205	W-Msc-386075	Ischnochiton floridanus 	eefd0cbd5277f27a91089a154fb68c3a	665b17d0e15d32027939bf13804ba7b5	Ischnochitonidae	Chitonida	Polyplacophora	Mollusca	Animalia
-W-Msc-387206	W-Msc-386076	Chiton limaciformis 	951e946a8c86c37ce485c8ec7db53531	80c7aad38e1ef1e6c846be84dca05265	Ischnochitonidae	Chitonida	Polyplacophora	Mollusca	Animalia
-W-Msc-387207	W-Msc-386077	Ischnochiton marcusi 	ae2dfaacccb4afacc47d193b8154632c	e46bd24ce44d9dbb847fc6366d98d7ba	Ischnochitonidae	Chitonida	Polyplacophora	Mollusca	Animalia
-W-Msc-387208	W-Msc-386078	Ischnochiton mariposa 	23b73e76dc7f7f6c119c0ff6bb0dcf1e	e6a7679c299460b8d517668f8bf13fdd	Ischnochitonidae	Chitonida	Polyplacophora	Mollusca	Animalia
-W-Msc-387209	W-Msc-386079	Chiton petaloides 	5744ca45a98409bed33e551fae25ed5e	1ecc3ac57eeea9de4445737c7619d679	Ischnochitonidae	Chitonida	Polyplacophora	Mollusca	Animalia
-W-Msc-387210	W-Msc-386080	Chiton purpurascens 	4f1f010770b83d7acdad9252297d9267	037c6b8b33a0eeeceab45687d87d0768	Ischnochitonidae	Chitonida	Polyplacophora	Mollusca	Animalia
-W-Msc-387211	W-Msc-386081	Chiton rugulatus 	3610e6f933d520c2dd88a5cc97765e76	bcb7dce4f51bcf34cf4af52ef83b0758	Ischnochitonidae	Chitonida	Polyplacophora	Mollusca	Animalia
-W-Msc-387212	W-Msc-386082	Ischnochiton venustus 	3633f9e0f5160f98c050e17f6676e4c6	d3c74aabac15a9d3266c8d216b78524c	Ischnochitonidae	Chitonida	Polyplacophora	Mollusca	Animalia
+t0052208	t0052208	Ophichthus bicolor McCosker & Ho, 2015	t0052208	t0052208	高鰭蛇鰻	Species	Ophichthus	Ophichthidae	Anguilliformes	Teleostei	Chordata	Animalia	Ophichthus bicolor	accepted
+t0053472	t0053472	Anthemis galilaea var. brachyota Eig	t0053472	t0053472	鱧腸	Species	Eclipta	Asteraceae	Asterales	Magnoliopsida	Tracheophyta	Plantae	Anthemis galilaea var. brachyota	not-accepted
+t0088168	t0088168	Fulvimarina	t0088168	t0088168		Genus		Aurantimonadaceae	Hyphomicrobiales	Alphaproteobacteria	Proteobacteria	Bacteria	Fulvimarina	accepted
+t0051429	t0051429	Hyalobole taiwanensis Hreblay & Ronkay, 1998	t0051429	t0051429		Species	Hyalobole	Noctuidae	Lepidoptera	Insecta	Arthropoda	Animalia	Hyalobole taiwanensis	accepted
+t0022568	t0022568	Mesochria	t0022568	t0022568		Genus		Mycetobiidae	Diptera	Insecta	Arthropoda	Animalia	Mesochria	accepted
+t0020569	t0020569	Hemipsocus	t0020569	t0020569	半嚙蟲屬	Genus		Hemipsocidae	Psocodea	Insecta	Arthropoda	Animalia	Hemipsocus	accepted
+t0083594	t0083594	Pavona maldivensis	t0083594	t0083594	馬島雀屏珊瑚	Species	Pavona	Agariciidae	Scleractinia	Hexacorallia	Cnidaria	Animalia	Pavona maldivensis	accepted
+t0079546	t0079546	Crenulilimopsis oblonga	t0079546	t0079546	卵形笠蚶	Species	Crenulilimopsis	Limopsidae	Arcida	Bivalvia	Mollusca	Animalia	Crenulilimopsis oblonga	accepted
+t0000055	t0000055	Elusimicrobia	t0000055	t0000055		Phylum						Bacteria	Elusimicrobia	accepted
+t0059254	t0059254	Achnanthes deflexa Reimer	t0059254	t0059254		Species	Achnanthidium	Achnanthidiaceae	Cocconeidales	Bacillariophyceae	Ochrophyta	Chromista	Achnanthes deflexa	not-accepted
+t0034707	t0034707	Cerebella cynodontis	t0034707	t0034707	狗牙根腦狀孢菌	Species	Cerebella	Pleosporaceae	Pleosporales	Dothideomycetes	Ascomycota	Fungi	Cerebella cynodontis	accepted
+t0010371	t0010371	Arrade	t0010371	t0010371		Genus		Erebidae	Lepidoptera	Insecta	Arthropoda	Animalia	Arrade	accepted
+t0044422	t0044422	Trametes pocas	t0044422	t0044422	波卡斯栓菌	Species	Trametes	Polyporaceae	Polyporales	Agaricomycetes	Basidiomycota	Fungi	Trametes pocas	accepted
+t0074842	t0074842	Monosolenium tenerum	t0074842	t0074842	單月蘚	Species	Monosolenium	Monosoleniaceae	Marchantiales	Marchantiopsida	Marchantiophyta	Plantae	Monosolenium tenerum	accepted
+t0042361	t0042361	Penicillium puberulum Bainier	t0042361	t0042361	橘灰青黴	Species	Penicillium	Aspergillaceae	Eurotiales	Eurotiomycetes	Ascomycota	Fungi	Penicillium puberulum	not-accepted
+t0012036	t0012036	Clinotanypus	t0012036	t0012036	斜長搖蚊屬	Genus		Chironomidae	Diptera	Insecta	Arthropoda	Animalia	Clinotanypus	accepted
+t0024005	t0024005	Hevea Aubl.	t0024005	t0024005	橡膠樹屬	Genus		Euphorbiaceae	Malpighiales	Magnoliopsida	Tracheophyta	Plantae	Hevea	accepted
+t0034496	t0034496	Monilia metschnikoffii Castell.	t0034496	t0034496	白色念珠菌	Species	Candida		Saccharomycetales	Saccharomycetes	Ascomycota	Fungi	Monilia metschnikoffii	not-accepted
+t0047074	t0047074	Tetraleurodes oplismeni Takahashi, 1934	t0047074	t0047074	求米草粉蝨	Species	Tetraleurodes	Aleyrodidae	Hemiptera	Insecta	Arthropoda	Animalia	Tetraleurodes oplismeni	accepted
+t0057272	t0057272	Distichophyllum collenchymatosum	t0057272	t0057272	厚角黃苔	Species	Distichophyllum	Hookeriaceae	Hookeriales	Bryopsida	Bryophyta	Plantae	Distichophyllum collenchymatosum	accepted
+t0007013	t0007013	Alternaria	t0007013	t0007013	鏈隔孢菌屬	Genus		Pleosporaceae	Pleosporales	Dothideomycetes	Ascomycota	Fungi	Alternaria	accepted
+t0069309	t0069309	Micronecta lenticularis Chen, 1960	t0069309	t0069309		Species	Micronecta	Corixidae	Hemiptera	Insecta	Arthropoda	Animalia	Micronecta lenticularis	accepted
+t0036897	t0036897	Psammoecus taiwanensis	t0036897	t0036897		Species	Psammoecus	Silvanidae	Coleoptera	Insecta	Arthropoda	Animalia	Psammoecus taiwanensis	accepted
+t0064449	t0064449	Gergithus nigrolimbatus	t0064449	t0064449		Species	Gergithus	Issidae	Hemiptera	Insecta	Arthropoda	Animalia	Gergithus nigrolimbatus	accepted
+t0084669	t0084669	Appias paulina minato	t0084669	t0084669	黃尖粉蝶,蘭嶼粉蝶, 波江白蝶, 衽環粉蝶, 黑緣尖粉蝶, 寶玲尖粉蝶	Subspecies	Appias	Pieridae	Lepidoptera	Insecta	Arthropoda	Animalia	Appias paulina minato	accepted
+t0006254	t0006254	Laophontidae	t0006254	t0006254		Family			Harpacticoida	Maxillopoda	Arthropoda	Animalia	Laophontidae	accepted
+t0065107	t0065107	Hanaiborchella formosana	t0065107	t0065107	麗島花井介	Species	Hanaiborchella	Cytheridae	Podocopida	Ostracoda	Arthropoda	Animalia	Hanaiborchella formosana	accepted
+t0044864	t0044864	Xerula pudens	t0044864	t0044864	絨奧德蘑	Species	Xerula	Physalacriaceae	Agaricales	Agaricomycetes	Basidiomycota	Fungi	Xerula pudens	accepted
+t0031767	t0031767	Petrolisthes nipponensis Miyake, 1937	t0031767	t0031767	紅褐岩瓷蟹,大紅岩瓷蟹	Species	Petrolisthes	Porcellanidae	Decapoda	Malacostraca	Arthropoda	Animalia	Petrolisthes nipponensis	not-accepted
+t0044256	t0044256	Stypella grilletii	t0044256	t0044256		Species	Stypella	Exidiaceae	Auriculariales	Agaricomycetes	Basidiomycota	Fungi	Stypella grilletii	accepted
+t0055628	t0055628	Trachelium azureum Gouan	t0055628	t0055628	夕霧	Species	Trachelium	Campanulaceae	Asterales	Magnoliopsida	Tracheophyta	Plantae	Trachelium azureum	not-accepted
+t0060178	t0060178	Nitzschia plana W.Sm.	t0060178	t0060178	明顯菱形藻	Species	Nitzschia	Bacillariaceae	Bacillariales	Bacillariophyceae	Ochrophyta	Chromista	Nitzschia plana	accepted
+t0057421	t0057421	Flemingia capitata Buch.-Ham.	t0057421	t0057421	大葉佛來明豆,鏽毛千斤拔, 寬葉千斤拔, 雲南千斤拔	Species	Flemingia	Fabaceae	Fabales	Magnoliopsida	Tracheophyta	Plantae	Flemingia capitata	not-accepted
+t0053480	t0053480	Eichhornia crassicaulis Schltdl.	t0053480	t0053480	布袋蓮,浮水蓮花, 鳳眼蓮	Species	Pontederia	Pontederiaceae	Commelinales	Magnoliopsida	Tracheophyta	Plantae	Eichhornia crassicaulis	not-accepted
+t0074868	t0074868	Mussaenda formosana	t0074868	t0074868	寶島玉葉金花	Species	Mussaenda	Rubiaceae	Gentianales	Magnoliopsida	Tracheophyta	Plantae	Mussaenda formosana	accepted
+t0086281	t0086281	Stenothyra edogawensis tanabensis	t0086281	t0086281	田邊粟螺	Subspecies	Stenothyra	Stenothyridae	Mesogastropoda	Gastropoda	Mollusca	Animalia	Stenothyra edogawensis tanabensis	accepted
+t0034489	t0034489	Camposporium hyderabadense	t0034489	t0034489	海德鐘形孢菌	Species	Camposporium	Melanommataceae	Pleosporales	Dothideomycetes	Ascomycota	Fungi	Camposporium hyderabadense	accepted
+t0028753	t0028753	Duplicaria duplicata	t0028753	t0028753	雙層筍螺	Species	Duplicaria	Terebridae	Neogastropoda	Gastropoda	Mollusca	Animalia	Duplicaria duplicata	accepted
+t0090009	t0090009	Paracoccus haeundaensis	t0090009	t0090009		Species	Paracoccus	Rhodobacteraceae	Rhodobacterales	Alphaproteobacteria	Proteobacteria	Bacteria	Paracoccus haeundaensis	accepted
+t0005411	t0005411	Bathysauridae	t0005411	t0005411	深海蜥魚科	Family			Aulopiformes	Teleostei	Chordata	Animalia	Bathysauridae	accepted
+t0035870	t0035870	Gloeoporus orientalis	t0035870	t0035870		Species	Gloeoporus	Meruliaceae	Polyporales	Agaricomycetes	Basidiomycota	Fungi	Gloeoporus orientalis	accepted
+t0082384	t0082384	Oratosquillina inornata	t0082384	t0082384	無刺似口蝦蛄	Species	Oratosquillina	Squillidae	Stomatopoda	Malacostraca	Arthropoda	Animalia	Oratosquillina inornata	accepted
+t0097673	t0097673	Chlidonias hybrida	t0097673	t0097673		Species	Chlidonias	Laridae	Charadriiformes	Reptilia	Chordata	Animalia	Chlidonias hybrida	accepted
+t0019274	t0019274	Ephemera	t0019274	t0019274	蜉蝣屬	Genus		Ephemeridae	Ephemeroptera	Insecta	Arthropoda	Animalia	Ephemera	accepted
+t0072947	t0072947	Butea monosperma	t0072947	t0072947	膠蟲樹	Species	Butea	Fabaceae	Fabales	Magnoliopsida	Tracheophyta	Plantae	Butea monosperma	accepted
+t0027506	t0027506	Lispe kowarzi Becker, 1903	t0027506	t0027506	黃鏣溜蠅	Species	Lispe	Muscidae	Diptera	Insecta	Arthropoda	Animalia	Lispe kowarzi	accepted
+t0053230	t0053230	Cymbidium illiberale Hayata	t0053230	t0053230	金稜邊蘭	Species	Cymbidium	Orchidaceae	Asparagales	Magnoliopsida	Tracheophyta	Plantae	Cymbidium illiberale	not-accepted
+t0093999	t0093999	Callidryas	t0093999	t0093999		Genus		Pieridae	Lepidoptera	Insecta	Arthropoda	Animalia	Callidryas	accepted
+t0060549	t0060549	Synedra hennedyana W.Greg.	t0060549	t0060549	亨尼針杆藻	Species	Synedra	Fragilariaceae	Fragilariales	Bacillariophyceae	Ochrophyta	Chromista	Synedra hennedyana	accepted
+t0020952	t0020952	Hymenopenaeus	t0020952	t0020952	膜對蝦屬	Genus		Solenoceridae	Decapoda	Malacostraca	Arthropoda	Animalia	Hymenopenaeus	accepted
+t0029171	t0029171	Exorista rusticella	t0029171	t0029171	鄉村寄蠅	Species	Exorista	Tachinidae	Diptera	Insecta	Arthropoda	Animalia	Exorista rusticella	accepted
+t0033521	t0033521	Haberlea divaricata Pohl ex Baker	t0033521	t0033521	鋸葉貓腥草,貓腥草	Species	Praxelis	Asteraceae	Asterales	Magnoliopsida	Tracheophyta	Plantae	Haberlea divaricata	not-accepted
+t0053530	t0053530	Cacalia sonchifolia L.	t0053530	t0053530	紫背草,一點紅, 葉下紅	Species	Emilia	Asteraceae	Asterales	Magnoliopsida	Tracheophyta	Plantae	Cacalia sonchifolia	not-accepted
+t0030034	t0030034	Lygris convexa Wileman, 1912	t0030034	t0030034		Species	Callabraxas	Geometridae	Lepidoptera	Insecta	Arthropoda	Animalia	Lygris convexa	not-accepted
+t0078282	t0078282	Chondria nigropunctata	t0078282	t0078282	黑點角細偽瓢蟲	Species	Chondria	Endomychidae	Coleoptera	Insecta	Arthropoda	Animalia	Chondria nigropunctata	accepted
+t0012137	t0012137	Colenisia	t0012137	t0012137		Genus		Leiodidae	Coleoptera	Insecta	Arthropoda	Animalia	Colenisia	accepted
+t0061437	t0061437	Diachasmimorpha longicaudata	t0061437	t0061437		Species	Diachasmimorpha	Braconidae	Hymenoptera	Insecta	Arthropoda	Animalia	Diachasmimorpha longicaudata	accepted
+t0074586	t0074586	Lilium distichum	t0074586	t0074586	輪葉百合	Species	Lilium	Liliaceae	Liliales	Magnoliopsida	Tracheophyta	Plantae	Lilium distichum	accepted
+t0055620	t0055620	Toddalia aculeata Pers.	t0055620	t0055620	飛龍掌血	Species	Toddalia	Rutaceae	Sapindales	Magnoliopsida	Tracheophyta	Plantae	Toddalia aculeata	not-accepted
+t0046933	t0046933	Tenodera sinensis	t0046933	t0046933	中華大刀螳	Species	Tenodera	Mantidae	Mantodea	Insecta	Arthropoda	Animalia	Tenodera sinensis	accepted
+t0079559	t0079559	Cricocephalus albus	t0079559	t0079559		Species	Cricocephalus	Pronocephalidae	Echinostomida	Trematoda	Platyhelminthes	Animalia	Cricocephalus albus	accepted
+t0084008	t0084008	Phenacovolva rosea	t0084008	t0084008	玫瑰菱角螺	Species	Phenacovolva	Ovulidae	Mesogastropoda	Gastropoda	Mollusca	Animalia	Phenacovolva rosea	accepted
+t0026670	t0026670	Dryopteris lacera (Thunb.) Kuntze	t0026670	t0026670	二型鱗毛蕨	Species	Dryopteris	Dryopteridaceae	Polypodiales	Polypodiopsida	Tracheophyta	Plantae	Dryopteris lacera	accepted
+t0043766	t0043766	Fomes ulmarius Fr.	t0043766	t0043766	榆生黑孔菌	Species	Rigidoporus	Meripilaceae	Polyporales	Agaricomycetes	Basidiomycota	Fungi	Fomes ulmarius	not-accepted
+t0058987	t0058987	Bartramia speciosa Griff.	t0058987	t0058987	東亞澤苔	Species	Philonotis	Bartramiaceae	Bryales	Bryopsida	Bryophyta	Plantae	Bartramia speciosa	not-accepted
+t0033497	t0033497	Solanum sanctum Dunal	t0033497	t0033497	萬桃花水茄,水茄, 毛柱萬桃花, 山茄	Species	Solanum	Solanaceae	Solanales	Magnoliopsida	Tracheophyta	Plantae	Solanum sanctum	not-accepted
+t0095765	t0095765	Paullinia	t0095765	t0095765		Genus		Rutaceae	Sapindales	Magnoliopsida	Tracheophyta	Plantae	Paullinia	accepted
+t0006012	t0006012	Gecarcinucidae Rathbun, 1904	t0006012	t0006012	擬地蟹科	Family			Decapoda	Malacostraca	Arthropoda	Animalia	Gecarcinucidae	accepted
+t0078894	t0078894	Coeliodes major	t0078894	t0078894		Species	Coeliodes	Curculionidae	Coleoptera	Insecta	Arthropoda	Animalia	Coeliodes major	accepted
+t0099242	t0099242	Carex tumida Boott	t0099242	t0099242	腫喙薹	Species	Carex	Cyperaceae	Poales	Magnoliopsida	Tracheophyta	Plantae	Carex tumida	accepted
+t0064329	t0064329	Gastraspis longicauda	t0064329	t0064329		Species	Gastraspis	Eucoilidae	Hymenoptera	Insecta	Arthropoda	Animalia	Gastraspis longicauda	accepted
+t0053858	t0053858	Orchiodes resupinatum Kuntze	t0053858	t0053858	南投斑葉蘭,大葉火燒蘭	Species	Goodyera	Orchidaceae	Asparagales	Magnoliopsida	Tracheophyta	Plantae	Orchiodes resupinatum	misapplied
+t0030091	t0030091	Caltoris ranrunna (Sonan, 1936)	t0030091	t0030091	臺灣黯弄蝶,台灣黯弄蝶	Species	Caltoris	Hesperiidae	Lepidoptera	Insecta	Arthropoda	Animalia	Caltoris ranrunna	accepted
+t0003192	t0003192	Coccodiscidae	t0003192	t0003192		Family			Polycystina	Heliozoa	Sarcomastigophora	Protozoa	Coccodiscidae	accepted
+t0002659	t0002659	Sterculia L.	t0002659	t0002659	蘋婆屬	Genus		Malvaceae	Malvales	Magnoliopsida	Tracheophyta	Plantae	Sterculia	accepted
+t0012600	t0012600	Cylindriscala	t0012600	t0012600		Genus		Epitoniidae	Heterogastropoda	Gastropoda	Mollusca	Animalia	Cylindriscala	accepted
+t0040616	t0040616	Canna heliconiifolia Bouché	t0040616	t0040616	美人蕉,白蓮蕉花, 白花曇花, 紫葉美人蕉, 紅花美人蕉	Species	Canna	Cannaceae	Zingiberales	Magnoliopsida	Tracheophyta	Plantae	Canna heliconiifolia	not-accepted
+t0054045	t0054045	Indigofera pseudo-tinctoria Matsum.	t0054045	t0054045	馬棘	Species	Indigofera	Fabaceae	Fabales	Magnoliopsida	Tracheophyta	Plantae	Indigofera pseudo-tinctoria	not-accepted
+t0014268	t0014268	Paussus Linnaeus, 1775	t0014268	t0014268		Genus		Carabidae	Coleoptera	Insecta	Arthropoda	Animalia	Paussus	accepted
+t0052671	t0052671	Astraea lobata (L.) Klotzsch	t0052671	t0052671	裂葉巴豆	Species	Astraea	Euphorbiaceae	Malpighiales	Magnoliopsida	Tracheophyta	Plantae	Astraea lobata	accepted
+t0057768	t0057768	Flustra cecilii Audouin, 1826	t0057768	t0057768		Species	Arthropoma	Lacernidae	Cheilostomata	Gymnolaemata	Bryozoa	Animalia	Flustra cecilii	not-accepted
+t0051955	t0051955	Musotima colonalis Bremer, 1864	t0051955	t0051955		Species	Musotima	Crambidae	Lepidoptera	Insecta	Arthropoda	Animalia	Musotima colonalis	accepted
+t0078687	t0078687	Cleomenes longipennis Gressitt, 1951	t0078687	t0078687	黑條粗腿細天牛	Species	Cleomenes	Cerambycidae	Coleoptera	Insecta	Arthropoda	Animalia	Cleomenes longipennis	accepted
+t0045640	t0045640	Petalomonas platyrhncha	t0045640	t0045640		Species	Petalomonas	Astasiaceae	Euglenales	Euglenida	Euglenozoa	Protozoa	Petalomonas platyrhncha	accepted
+t0028090	t0028090	Monopterus albus (Zuiew, 1793)	t0028090	t0028090	黃鱔,鱔魚	Species	Monopterus	Synbranchidae	Synbranchiformes	Teleostei	Chordata	Animalia	Monopterus albus	accepted
+t0054895	t0054895	Poa garanica Ikonn.	t0054895	t0054895	草地早熟禾	Species	Poa	Poaceae	Poales	Magnoliopsida	Tracheophyta	Plantae	Poa garanica	not-accepted
+t0033559	t0033559	Acalypha macrophylla Veitch	t0033559	t0033559	威氏鐵莧	Species	Acalypha	Euphorbiaceae	Malpighiales	Magnoliopsida	Tracheophyta	Plantae	Acalypha macrophylla	not-accepted
+t0026163	t0026163	Nipponidion	t0026163	t0026163		Genus		Theridiidae	Araneae	Arachnida	Arthropoda	Animalia	Nipponidion	accepted
+t0073362	t0073362	Coelastrum astroideum	t0073362	t0073362	星狀空星藻	Species	Coelastrum	Scenedesmaceae	Sphaeropleales	Chlorophyceae	Chlorophyta	Plantae	Coelastrum astroideum	accepted
+t0087206	t0087206	Hantzschia virgata var. capitellata Hust.	t0087206	t0087206		Variety	Hantzschia	Bacillariaceae	Bacillariales	Bacillariophyceae	Ochrophyta	Chromista	Hantzschia virgata var. capitellata	accepted
+t0054397	t0054397	Manihot flabellifolia Pohl	t0054397	t0054397	樹薯	Species	Manihot	Euphorbiaceae	Malpighiales	Magnoliopsida	Tracheophyta	Plantae	Manihot flabellifolia	not-accepted
+t0067019	t0067019	Lema coronata Baly, 1873	t0067019	t0067019	中刺細頸金花蟲	Species	Lema	Chrysomelidae	Coleoptera	Insecta	Arthropoda	Animalia	Lema coronata	accepted
+t0079425	t0079425	Corycaeus latus Dana, 1849	t0079425	t0079425	側大眼水蚤	Species	Corycaeus	Corycaeidae	Cyclopoida	Maxillopoda	Arthropoda	Animalia	Corycaeus latus	accepted
+t0065309	t0065309	Hemicheyletia anabora	t0065309	t0065309		Species	Hemicheyletia	Cheyletidae	Trombidiformes	Arachnida	Arthropoda	Animalia	Hemicheyletia anabora	accepted
+t0033508	t0033508	Abildgaardia eragrostis Nees	t0033508	t0033508	紫穗飄拂草,知風飄拂草, 褐鱗飄拂草	Species	Fimbristylis	Cyperaceae	Poales	Magnoliopsida	Tracheophyta	Plantae	Abildgaardia eragrostis	not-accepted
+t0054663	t0054663	Osmanthus wilsonii Nakai	t0054663	t0054663	大葉木犀	Species	Osmanthus	Oleaceae	Lamiales	Magnoliopsida	Tracheophyta	Plantae	Osmanthus wilsonii	not-accepted
+t0051459	t0051459	Hypena albopunctalis Leech, 1889	t0051459	t0051459		Species	Hypena	Erebidae	Lepidoptera	Insecta	Arthropoda	Animalia	Hypena albopunctalis	accepted
+t0050963	t0050963	Eupithecia costiconvexa Inoue, 1979	t0050963	t0050963		Species	Eupithecia	Geometridae	Lepidoptera	Insecta	Arthropoda	Animalia	Eupithecia costiconvexa	accepted
+t0060816	t0060816	Actinodontium rhaphidostegum	t0060816	t0060816	皺葉假黃苔	Species	Actinodontium	Hookeriaceae	Hookeriales	Bryopsida	Bryophyta	Plantae	Actinodontium rhaphidostegum	accepted
+t0054633	t0054633	Opuntia dillenii (Ker Gawl.) Haw.	t0054633	t0054633	仙人掌	Species	Opuntia	Cactaceae	Caryophyllales	Magnoliopsida	Tracheophyta	Plantae	Opuntia dillenii	accepted
