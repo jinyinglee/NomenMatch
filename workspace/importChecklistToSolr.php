@@ -99,7 +99,7 @@ while ($vals = fgetcsv($fp, 0, "\t" )) {
 	 */
 
 	$rec = array();
-	$rec['id'] = $source . '-' . $vals[0];
+	// $rec['id'] = $source . '-' . $vals[0];
 	$rec['source'] = $source;
 
 	$rec['url_id'] = $vals[3];

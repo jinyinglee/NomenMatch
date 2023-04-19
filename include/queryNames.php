@@ -131,9 +131,6 @@ function queryNames ($name, $against, $best, $ep) {
 	if (empty($ep)) return false;
 
 	$ep .= '/select?wt=json&q=*:*&sort=source%20asc'; 
-	// $ep = 'http://localhost:8983/solr/taxa/select?wt=json&q=*:*';
-	// $ep = 'http://solr:8983/solr/taxa/select?wt=json&q=*:*';
-	// $ep = 'http://140.109.28.72/solr4/taxa/select?wt=json&q=*:*';
 
 	extract_results("", "", $reset=true);
 	// mix2; work with latin part b2, c2, and suggestions of latin part b2, c2
@@ -164,9 +161,9 @@ function queryNames ($name, $against, $best, $ep) {
 		return	array('N/A' => array(
 					'name' => $name,
 					'name_cleaned' => $name_cleaned,
-					'matched' => 'N/A',
+					'matched' => array(),
 					'matched_clean' => 'N/A',
-					'common_name' => 'N/A',
+					'common_name' => array(),
 					'accepted_namecode' => array(),
 					'namecode' => array(),
 					'name_status' => array(),
@@ -179,7 +176,7 @@ function queryNames ($name, $against, $best, $ep) {
 					'order' => array(),
 					'family' => array(),
 					'genus' => array(),
-					'type' => 'N/A',
+					'type' => 'No match',
 					'taxon_rank' => array(),
 					'id' => array(),
 				)
