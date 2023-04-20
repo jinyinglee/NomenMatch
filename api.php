@@ -508,20 +508,25 @@ function render_table ($data, $time, $hardcsv=false, $next_page, $previous_page,
 	$titles = array('score','search<br/>term','matched<br/>clean','matched','common<br/>name','accepted<br/>namecode','namecode',
 					'name<br/>status','source','kingdom','phylum','class','order','family','genus','taxon<br/>rank','match<br/>type');
 	
+
 	// 標題
 	echo "<tbody><tr class='title'><td>" . implode("</td><td>", $titles) . "</td></tr></tbody>\n";
 	// $prev_score = -100;
+	/*
 	unset($columns[0]); // score
 	unset($columns[1]); // name
-	unset($columns[3]); // matched_clean
+	unset($columns[2]); // matched_clean
 	unset($columns[15]); // type
 	unset($columns[17]); // id
+
+	print_r($columns);*/
+
+	$not_col_array = array('score','name','matched_clean','type','id');
 
 	// 內文
 	foreach ($data as $nidx => $name_d) {
 		foreach ($name_d as $d) {
 			$source_for_type = $d['source'];
-
 			$ncs = $d['namecode'];
 			$ancs = $d['accepted_namecode'];
 			$sources = $d['source'];
@@ -579,17 +584,19 @@ function render_table ($data, $time, $hardcsv=false, $next_page, $previous_page,
 			echo $d['name']."</td>";
 			echo "<td rowspan='".$rowspan."'>".$d['matched_clean']."</td>";
 			foreach ($columns as $c) {
-				if (($c == 'matched' && !preg_match("/\p{Han}+/u", $d['name'])) || ($c == 'common_name' && preg_match("/\p{Han}+/u", $d['name']))){
-					if (!$d[$c]) {
-						echo "<td class='matched'></td>";
+				if (!in_array($c, $not_col_array)){
+					if (($c == 'matched' && !preg_match("/\p{Han}+/u", $d['name'])) || ($c == 'common_name' && preg_match("/\p{Han}+/u", $d['name']))){
+						if (!$d[$c]) {
+							echo "<td class='matched'></td>";
+						} else {
+							echo "<td class='matched'>".$d[$c][0]."</td>";
+						}
 					} else {
-						echo "<td class='matched'>".$d[$c][0]."</td>";
-					}
-				} else {
-					if (!$d[$c]) {
-						echo "<td></td>";
-					} else {
-						echo "<td>".$d[$c][0]."</td>";
+						if (!$d[$c]) {
+							echo "<td></td>";
+						} else {
+							echo "<td>".$d[$c][0]."</td>";
+						}
 					}
 				}
 			}
@@ -613,10 +620,12 @@ function render_table ($data, $time, $hardcsv=false, $next_page, $previous_page,
 				foreach (range(1, $rowspan-1) as $n) {
 					echo "<tr class='row_result' id='row_".$serial_no."'>";
 					foreach ($columns as $c) {
-						if (($c == 'matched' && !preg_match("/\p{Han}+/u", $d['name']))|| ($c == 'common_name' && preg_match("/\p{Han}+/u", $d['name']))){
-							echo "<td class='matched'>".$d[$c][$n]."</td>";
-						} else {
-							echo "<td>".$d[$c][$n]."</td>";
+						if (!in_array($c, $not_col_array)){
+							if (($c == 'matched' && !preg_match("/\p{Han}+/u", $d['name']))|| ($c == 'common_name' && preg_match("/\p{Han}+/u", $d['name']))){
+								echo "<td class='matched'>".$d[$c][$n]."</td>";
+							} else {
+								echo "<td>".$d[$c][$n]."</td>";
+							}
 						}
 					}
 					// type
