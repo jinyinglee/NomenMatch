@@ -1,8 +1,8 @@
 FROM solr:8
 
-# COPY solrconfig.xml /opt/solr
+COPY solrconfig.xml /opt/solr
 # # COPY schema.xml /opt/solr
-# COPY managed-schema /opt/solr
+COPY managed-schema /opt/solr
 
 #COPY entrypoint /opt/solr/start
 
