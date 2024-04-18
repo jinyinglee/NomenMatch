@@ -21,7 +21,6 @@ if (!empty($name)) {
 }
 //*/
 
-// echo treat_word_c('台灣');
 
 function sortByKeyOrder(array $sortOrderKeys, array $arrayToSort){
 	$output = [];
@@ -65,24 +64,33 @@ function queryNameSingle($name, $name_cleaned, $against, $best, $ep){
 		'id');
 
 	if ($best=='yes'&&!(preg_match("/\p{Han}+/u", $name_cleaned))) { // best, 不是中文
-		$ep .= '/select?wt=json&fq=is_single_word%3Atrue&rows=0&q=' . rawurlencode($name_cleaned) .'~1';
+		// 如果輸入單一個英文字母
+		if (strlen($name_cleaned) == 1 ){
+			$ep .= '/select?wt=json&fq=is_single_word%3Atrue&rows=0&q=' . rawurlencode($name_cleaned) ;
+		} else {
+			$ep .= '/select?wt=json&fq=is_single_word%3Atrue&rows=0&q=' . rawurlencode($name_cleaned) .'~1';
+		}
 	} 
-	elseif ($best=='yes'&&preg_match("/\p{Han}+/u", $name_cleaned)) { // best, 是中文
-		$ep .= '/select?wt=json&rows=0&q=common_name_c:/(' . rawurlencode(treat_word_c($name_cleaned)) . ')/';
-	}
-	elseif (preg_match("/\p{Han}+/u", $name_cleaned)) { // 是中文
-		$ep .= '/select?wt=json&rows=0&q=common_name_c:/.*' . rawurlencode(treat_word_c($name_cleaned)) . '.*/';
+	elseif (preg_match("/\p{Han}+/u", $name_cleaned)) { // 是中文 只回傳異體字相符
+		// 中文只回傳有效名
+		$name_used_query = rawurlencode(treat_word_c($name_cleaned));
+		$ep .= '/select?wt=json&rows=0&fl=*,score&fq=name_status:accepted&q=common_name_c:/' . $name_used_query .  '/^6%20or%20alternative_name_c:/' . $name_used_query . '/^5';
 	}
 	elseif (!preg_match("/\p{Han}+/u", $name_cleaned)) { // 不是best, 不是中文
-		$ep .= '/select?wt=json&fq=is_single_word%3Atrue&rows=0&q=' . rawurlencode($name_cleaned) .'~';
-	} 
 
+		if (strlen($name_cleaned) == 1 ){
+			$ep .= '/select?wt=json&fq=is_single_word%3Atrue&rows=0&q=/.*' . rawurlencode($name_cleaned) . '.*/';
+		} else {
+			$ep .= '/select?wt=json&fq=is_single_word%3Atrue&rows=0&q=' . rawurlencode($name_cleaned) .'~';
+		}
+	} 
 
 	if (preg_match("/\p{Han}+/u", $name_cleaned)) {
 		extract_results($ep, '', $reset=false, $against=$against, $search_term=$name_cleaned);
 	}else{
 		extract_results($ep, '', $reset=false, $against=$against);
 	}
+
 	$all_matched_tmp = extract_results();
 	
 	if (!$all_matched_tmp['']['type']=='No match'){
@@ -372,6 +380,8 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $se
 	if (empty($query_url)&&!$reset) {
 		return $all_matched;
 	}
+
+
 	if (!empty($query_url)) {
 
 		if (!empty($against)) {
@@ -385,6 +395,7 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $se
 
 		$first_query = @json_decode(@file_get_contents($query_url));
 		$numFound = $first_query->response->numFound;
+
 		if ($numFound > 0){
 			$docs = array();
 			$rows = 100; // 每次回傳 100 rows
@@ -398,11 +409,14 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $se
 				$docs = array_merge($docs, $current_doc);
 			}
 		}
+
+
 	}
 	if (!empty($docs) ) {
 		foreach ($docs as $doc) {
 			$doc->is_accepted = ($doc->namecode === $doc->accepted_namecode)?1:0;
 			$matched[] = $doc;
+
 			if (preg_match("/\p{Han}+/u", $search_term)) {
 				$merged_term = $search_term;
 			} else{
@@ -411,11 +425,17 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $se
 			if (empty($all_matched[$merged_term])) {
 				unset($all_matched['']);
 				$cc = $doc -> common_name_c;
-				if (isset($cc)){
-					$cc = implode(",", $cc);
-				} else {
-					$cc = '';
+				$alternative_cc = $doc -> alternative_name_c;
+
+
+				if (isset($alternative_cc)) {
+					$cc .= ',' . implode(",", $alternative_cc);
 				}
+
+				if (!$cc){
+					$cc = '';	
+				}
+
 				$all_matched[$merged_term] = array(
 					'matched_clean' => $merged_term,
 					'matched' => array((isset($doc->original_name) ? @$doc -> original_name : '')),
@@ -437,19 +457,28 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $se
 					'simple_name' => array((isset($doc->simple_name) ? @$doc -> simple_name : '')),
 					'id' => array((isset($doc->id) ? @$doc -> id : '')),
 				);
-			}
-			else {
+			} else {
 				$cc = $doc -> common_name_c;
-				if (isset($cc)){
-					$cc = implode(",", $cc);
-				} else {
-					$cc = '';
+				$alternative_cc = $doc -> alternative_name_c;
+				
+				if (isset($alternative_cc)) {
+					$cc .= ',' . implode(",", $alternative_cc);
 				}
+
+				if (!$cc){
+					$cc = '';	
+				}
+
+				// if (isset($cc)){
+				// 	$cc = implode(",", $cc);
+				// } else {
+				// 	$cc = '';
+				// }
 				// 這邊如果有一樣的namecode會被拿掉
 				if (!in_array(@$doc->id, $all_matched[$merged_term]['id'])) {
 					$all_matched[$merged_term]['namecode'][] = (isset($doc->namecode) ? @$doc -> namecode : '');
 					$all_matched[$merged_term]['matched'][] = (isset($doc->original_name) ? @$doc -> original_name : '');
-					$all_matched[$merged_term]['common_name'][] = ($cc);
+					$all_matched[$merged_term]['common_name'][] = $cc;
 					$all_matched[$merged_term]['name_status'][] = (isset($doc->name_status) ? @$doc -> name_status : '');
 					$all_matched[$merged_term]['source'][] = (isset($doc->source) ? @$doc -> source : '');
 					$all_matched[$merged_term]['accepted_namecode'][] = (isset($doc->accepted_namecode) ? @$doc->accepted_namecode : '');
@@ -465,14 +494,12 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $se
 					$all_matched[$merged_term]['simple_name'][] = (isset($doc->simple_name) ? @$doc -> simple_name : '');
 					$all_matched[$merged_term]['id'][] = (isset($doc->id) ? @$doc -> id : '');
 				}
-
 			}
 		}
 //		echo "<xmp>";
 //		var_dump($matched);
 //		echo "</xmp>";
-	}
-	elseif (empty($all_matched)) {
+	} elseif (empty($all_matched)) {
 		$all_matched[''] = array(
 			'matched' => array(),
 			'matched_clean' => '',
