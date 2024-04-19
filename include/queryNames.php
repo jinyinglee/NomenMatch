@@ -71,10 +71,10 @@ function queryNameSingle($name, $name_cleaned, $against, $best, $ep){
 			$ep .= '/select?wt=json&fq=is_single_word%3Atrue&rows=0&q=' . rawurlencode($name_cleaned) .'~1';
 		}
 	} 
-	elseif (preg_match("/\p{Han}+/u", $name_cleaned)) { // 是中文 只回傳異體字相符
+	elseif (preg_match("/\p{Han}+/u", $name_cleaned)) { // 是中文 只回傳異體字相符 只查詢common_name_c有值的資料
 		// 中文只回傳有效名
 		$name_used_query = rawurlencode(treat_word_c($name_cleaned));
-		$ep .= '/select?wt=json&rows=0&fl=*,score&fq=name_status:accepted&q=common_name_c:/' . $name_used_query .  '/^6%20or%20alternative_name_c:/' . $name_used_query . '/^5';
+		$ep .= '/select?wt=json&rows=0&fl=*,score&fq=name_status:accepted&fq=common_name_c:*&q=common_name_c:/' . $name_used_query .  '/^6%20or%20alternative_name_c:/' . $name_used_query . '/^5';
 	}
 	elseif (!preg_match("/\p{Han}+/u", $name_cleaned)) { // 不是best, 不是中文
 
