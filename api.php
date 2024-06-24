@@ -426,6 +426,15 @@ foreach ($names as $nidx => $name) {
 
 		if (count($total_score_array)>1){
 			$highest_score = max($total_score_array);
+			if ($best == 'yes'){
+				foreach ($all_matched as $matched_name => $matched) {
+					$current_max_score = max($all_matched[$matched_name]['score']);
+					if ($highest_score != $current_max_score){
+						unset($all_matched[$matched_name]);
+						unset($scores[$matched_name]);
+					}
+				}
+			}
 		}
 
 		foreach ($scores as $matched_name => $score_array) {
@@ -489,19 +498,9 @@ foreach ($names as $nidx => $name) {
 				}
 			} 
 
-		# END of type
-
+			# END of type
 			
 			$res[$nidx][] = $all_matched[$matched_name];
-		
-			// print_r($all_matched[$matched_name]['score']);
-			if (count($all_matched[$matched_name]['score']) > 0){
-				$current_max_score = max($all_matched[$matched_name]['score']);
-
-				if (!preg_match("/\p{Han}+/u", $matched_name) && $best == 'yes' &&  $current_max_score == $highest_score) {
-					break;
-				}
-			}
 
 		}
 
