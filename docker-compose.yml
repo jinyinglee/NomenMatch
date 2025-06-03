@@ -2,28 +2,32 @@ version: '3'
 
 services:
   solr:
+    platform: linux/amd64
     build:
       context: ./compose/solr
       #dockerfile: ./compose/solr/Dockerfile
     image: nomenmatch-solr:8
     restart: always
     ports:
-      - "8983:8983"
+      - "8984:8983"
     volumes:
       - solr-data:/var/solr/data
+      - ./compose/solr:/compose/solr
       - ./solr-workspace:/workspace
       - ./conf/solr-config:/solr-config
     command:
       - solr-precreate
       #- gettingstarted
   nginx:
+    platform: linux/amd64
     image: nginx:latest
     ports:
-        - "8080:80"
+        - "8080:81"
     volumes:
         - ./:/code
         - ./compose/nginx:/etc/nginx/conf.d
   php:
+    platform: linux/amd64
     image: php:7-fpm
     volumes:
         - ./:/code

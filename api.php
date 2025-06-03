@@ -137,7 +137,7 @@ foreach ($names as $nidx => $name) {
 	else{
 		$name_cleaned = canonical_form(trim(preg_replace('/^[\pZ\pC]+|[\pZ\pC]+$/u','',$name), " \t\r\n.,;|"), true);
 	}
-
+	
 	// 如果可用空白鍵拆成array，則維持以原先的演算法match
 	if (count(explode(" ", $name_cleaned)) > 1 && !(preg_match("/\p{Han}+/u", $name_cleaned))) {	
 	/*
@@ -160,7 +160,9 @@ foreach ($names as $nidx => $name) {
 		//ksort($all_matched);
 		// kim: 比對後計算similarity
 		foreach ($all_matched as $matched_name => $matched) {
-			$scores[$matched_name] = nameSimilarity($matched['matched_clean'], $name_cleaned, $matched['type']);
+
+      $scores[$matched_name] = nameSimilarity($matched['matched_clean'], $name_cleaned, $matched['type']);
+
 		}
 		// kim: 根據score排序
 		arsort($scores);
@@ -330,12 +332,11 @@ foreach ($names as $nidx => $name) {
 		 */
 		$scores = array();
 		$total_score_array = array();
-
 		$all_matched = queryNameSingle($name, $name_cleaned, $against, $best, $ep, $bio_group, $is_in_taiwan, $taxon_rank, $kingdom);
 
 		// kim: 比對後計算similarity
+		
 		foreach ($all_matched as $matched_name => $matched) {
-			// 中文名
 			if (preg_match("/\p{Han}+/u", $name)){
 				
 				$return_score = nameSimilarityC($matched['common_name'], $name_cleaned);
@@ -357,6 +358,7 @@ foreach ($names as $nidx => $name) {
 					unset($return_keys[0]);
 					unset($return_keys[1]);
 					unset($return_keys[2]);
+
 
 					if (max($return_score) != 0) {
 
@@ -442,7 +444,7 @@ foreach ($names as $nidx => $name) {
 									}
 								}
 							}
-						// }
+
 					}
 
 				}
@@ -927,7 +929,7 @@ function render_csv ($data) {
 			if ($tmp_keys){
 				foreach($tmp_keys as $k){
 					$tmp = array();
-					// $tmp['score'] = $dsub['score'];
+
 					$tmp['search_term'] = $dsub['name'];
 					$tmp['name_cleaned'] = $dsub['name_cleaned'];
 					$tmp['matched_clean'] = $dsub['matched_clean'];
@@ -937,6 +939,7 @@ function render_csv ($data) {
 						} else {
 							$tmp[$c] = $dsub[$c][$k];
 						}
+
 					}
 
 					$current_source_index = 0;
@@ -949,7 +952,7 @@ function render_csv ($data) {
 				}
 			} else {
 				$tmp = array();
-				// $tmp['score'] = $dsub['score'];
+
 				$tmp['search_term'] = $dsub['name'];
 				$tmp['name_cleaned'] = $dsub['name_cleaned'];
 				$tmp['matched_clean'] = $dsub['matched_clean'];

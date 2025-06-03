@@ -458,10 +458,6 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $se
 
 		$numFound = $first_query->response->numFound;
 
-		// echo 'he';
-
-		// $maxScore = $first_query->response->maxScore;
-
 		if ($numFound > 0){
 			$docs = array();
 			$rows = 100; // 每次回傳 100 rows
@@ -512,7 +508,6 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $se
 				if (!$cc){
 					$cc = '';	
 				}
-
 				$all_matched[$merged_term] = array(
 					'matched_clean' => $merged_term,
 					'matched' => array((isset($doc->original_name) ? @$doc -> original_name : '')),
@@ -546,6 +541,7 @@ function extract_results ($query_url="", $msg="", $reset=false, $against="", $se
 				if (!$cc){
 					$cc = '';	
 				}
+
 
 				// 這邊如果有一樣的namecode會被拿掉
 				if (!in_array(@$doc->id, $all_matched[$merged_term]['id'])) {
