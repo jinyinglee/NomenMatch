@@ -136,6 +136,17 @@ foreach ($names as $nidx => $name) {
 	}
 	else{
 		$name_cleaned = canonical_form(trim(preg_replace('/^[\pZ\pC]+|[\pZ\pC]+$/u','',$name), " \t\r\n.,;|"), true);
+
+		// kim: 尾端標記 → 保留屬名/科名，改走單名比對
+		// 涵蓋 sp. / spp. / indet. / sp. nov. / spec. nov. / gen. nov. / sp. n.
+		// 註：canonical_form 已把標點與編號正規化，nov/spec/gen 不在 sci_parts 故殘留在尾端
+		$on_markers = array('sp', 'spp', 'indet', 'nov', 'spec', 'gen');
+		$on_parts = explode(' ', $name_cleaned);
+		while (count($on_parts) > 1 && in_array(end($on_parts), $on_markers, true)) {
+			array_pop($on_parts);
+			$name_cleaned = implode(' ', $on_parts);
+		}
+		unset($on_parts);
 	}
 	
 	// 如果可用空白鍵拆成array，則維持以原先的演算法match
@@ -1213,13 +1224,35 @@ echo "</xmp>";
 // 種以上階層的score計算
 
 function nameSimilaritySingle($matched_cleaned, $name){
-	
+
 	if ($matched_cleaned == 'N/A' or empty($matched_cleaned)) {
 		return 0;
-	} else {
-		$penalty = levenshtein($matched_cleaned, $name) / max(strlen($matched_cleaned), strlen($name));
-		return round((1 - $penalty), 3);
-	} 
+	}
+
+	$a = strtolower($matched_cleaned);
+	$b = strtolower($name);
+	$maxlen = max(strlen($a), strlen($b));
+
+	if ($maxlen == 0) {
+		return 0;
+	}
+
+	// 基底:編輯距離比例
+	$base = 1 - levenshtein($a, $b) / $maxlen;
+
+	// 共同前綴長度佔比(前綴越短代表越早分岔;首字就不同時為 0)
+	$prefix = 0;
+	$minlen = min(strlen($a), strlen($b));
+	while ($prefix < $minlen && $a[$prefix] === $b[$prefix]) {
+		$prefix++;
+	}
+	$prefix_ratio = $prefix / $maxlen;
+
+	// 加權:編輯距離為主、共同前綴為輔
+	// 首字/前段分岔(如 Faviidae vs Gaviidae)會因 prefix_ratio 偏低而被拉低分數
+	$score = 0.6 * $base + 0.4 * $prefix_ratio;
+
+	return round(max($score, 0), 3);
 }
 
 
