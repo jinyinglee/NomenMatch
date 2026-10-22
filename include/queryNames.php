@@ -98,9 +98,10 @@ function queryNameSingle($name, $name_cleaned, $against, $best, $ep, $bio_group,
 	if ($against == 'taicol' && isset($bio_group)){
 
 		if ($bio_group=='維管束植物'){
-			$ep .= '&fq=bio_group:' . rawurlencode('(' . $bio_group. ' OR '. '蕨類植物'. ')') ;
-		}
-		else {
+			$ep .= '&fq=bio_group:' . rawurlencode('(維管束植物 OR 蕨類植物)') ;
+		} elseif ($bio_group=='昆蟲') {
+			$ep .= '&fq=bio_group:' . rawurlencode('(昆蟲 OR 蛾類 OR 蝶類 OR 蜻蛉類 OR 甲蟲類 OR 其他昆蟲)') ;
+		} else {
 			$ep .= '&fq=bio_group:' . rawurlencode($bio_group);
 		}		
 	}
@@ -180,9 +181,10 @@ function queryNames ($name, $against, $best, $ep, $bio_group, $is_in_taiwan, $ta
 	if ($against == 'taicol' && isset($bio_group)){
 
 		if ($bio_group=='維管束植物'){
-			$ep .= '&fq=bio_group:' . rawurlencode('(' . $bio_group. ' OR '. '蕨類植物'. ')') ;
-		}
-		else {
+			$ep .= '&fq=bio_group:' . rawurlencode('(維管束植物 OR 蕨類植物)') ;
+		} elseif ($bio_group=='昆蟲') {
+			$ep .= '&fq=bio_group:' . rawurlencode('(昆蟲 OR 蛾類 OR 蝶類 OR 蜻蛉類 OR 甲蟲類 OR 其他昆蟲)') ;
+		} else {
 			$ep .= '&fq=bio_group:' . rawurlencode($bio_group);
 		}		
 
